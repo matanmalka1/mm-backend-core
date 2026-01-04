@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import { comparePassword, hashPassword } from "../utils/password.js";
 import {
   User,
   Role,
@@ -12,7 +12,7 @@ import {
   verifyRefreshToken,
 } from "../utils/jwt.js";
 
-export const register = async (userData, req) => {
+export const register = async (userData) => {
   const existingUser = await User.findOne({ where: { email: userData.email } });
   if (existingUser) {
     throw new ApiError(
@@ -33,7 +33,7 @@ export const register = async (userData, req) => {
 
   const user = await User.create({
     email: userData.email,
-    password: await bcrypt.hash(userData.password, 10),
+    password: await hashPassword(userData.password),
     firstName: userData.firstName,
     lastName: userData.lastName,
     roleId: defaultRole.id,
@@ -42,7 +42,7 @@ export const register = async (userData, req) => {
   return { user };
 };
 
-export const login = async (email, password, req) => {
+export const login = async (email, password) => {
   const user = await User.findOne({
     where: { email },
     attributes: { include: ["password"] },
@@ -63,7 +63,7 @@ export const login = async (email, password, req) => {
     );
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
+  const isPasswordValid = await comparePassword(password, user.password);
   if (!isPasswordValid) {
     throw new ApiError(
       API_ERROR_CODES.INVALID_CREDENTIALS,
@@ -86,7 +86,7 @@ export const login = async (email, password, req) => {
   return { user, accessToken, refreshToken };
 };
 
-export const logout = async (userId, refreshToken, req) => {
+export const logout = async (userId, refreshToken) => {
   if (refreshToken) {
     await RefreshToken.update(
       { isRevoked: true, revokedAt: new Date() },
@@ -94,7 +94,7 @@ export const logout = async (userId, refreshToken, req) => {
     );
   }
 };
-export const refreshAccessToken = async (oldRefreshToken, req) => {
+export const refreshAccessToken = async (oldRefreshToken) => {
   const decoded = verifyRefreshToken(oldRefreshToken);
   const tokenRecord = await RefreshToken.findOne({
     where: {

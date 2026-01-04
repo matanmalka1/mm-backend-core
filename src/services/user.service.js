@@ -1,9 +1,9 @@
 import { User, Role, Permission } from "../models/associations.js";
 import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
-import bcrypt from "bcrypt";
+import { hashPassword } from "../utils/password.js";
 
 // CREATE
-export const createUser = async (userData, req) => {
+export const createUser = async (userData) => {
   const existingUser = await User.findOne({ where: { email: userData.email } });
 
   if (existingUser) {
@@ -26,7 +26,7 @@ export const createUser = async (userData, req) => {
 
   const user = await User.create({
     email: userData.email,
-    password: await bcrypt.hash(userData.password, 10),
+    password: await hashPassword(userData.password),
     firstName: userData.firstName,
     lastName: userData.lastName,
     roleId: userData.roleId,
@@ -65,7 +65,7 @@ export const getUserById = async (id) => {
   if (!user) {
     throw new ApiError(
       API_ERROR_CODES.RESOURCE_NOT_FOUND,
-      "User not found",
+      `User with id ${id} not found`,
       404
     );
   }
@@ -74,7 +74,7 @@ export const getUserById = async (id) => {
 };
 
 // UPDATE
-export const updateUser = async (id, userData, req) => {
+export const updateUser = async (id, userData) => {
   const user = await User.findByPk(id);
 
   if (!user) {
@@ -121,7 +121,7 @@ export const updateUser = async (id, userData, req) => {
 };
 
 // DELETE
-export const deleteUser = async (id, req) => {
+export const deleteUser = async (id) => {
   const user = await User.findByPk(id);
 
   if (!user) {

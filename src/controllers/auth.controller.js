@@ -3,6 +3,13 @@ import { successResponse } from "../utils/response.js";
 import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.COOKIE_SECURE === "true",
+  sameSite: process.env.COOKIE_SAME_SITE || "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
 // Handle registration request.
 export const register = asyncHandler(async (req, res) => {
   const { user } = await authService.register(req.body);
@@ -18,12 +25,7 @@ export const login = asyncHandler(async (req, res) => {
     password
   );
 
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE,
-    sameSite: process.env.COOKIE_SAME_SITE,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie("refreshToken", refreshToken, cookieOptions);
 
   successResponse(res, { user, accessToken }, "Login successful");
 });
@@ -50,20 +52,20 @@ export const refresh = asyncHandler(async (req, res) => {
     );
   }
 
-  const { accessToken, refreshToken } =
-    await authService.refreshAccessToken(oldRefreshToken);
+  const { accessToken, refreshToken } = await authService.refreshAccessToken(
+    oldRefreshToken
+  );
 
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE,
-    sameSite: process.env.COOKIE_SAME_SITE,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie("refreshToken", refreshToken, cookieOptions);
 
   successResponse(res, { accessToken }, "Token refreshed successfully");
 });
 
 // Return the authenticated user's profile.
 export const me = asyncHandler(async (req, res) => {
-  successResponse(res, { user: req.user }, "User profile retrieved successfully");
+  successResponse(
+    res,
+    { user: req.user },
+    "User profile retrieved successfully"
+  );
 });

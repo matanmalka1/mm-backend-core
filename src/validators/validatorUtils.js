@@ -1,8 +1,5 @@
 import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
 
-export const isNonEmptyString = (value) =>
-  typeof value === "string" && value.trim().length > 0;
-
 export const isValidName = (value) =>
   typeof value === "string" && /^[A-Za-z]{2,15}$/.test(value.trim());
 

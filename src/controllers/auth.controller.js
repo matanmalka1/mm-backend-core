@@ -4,7 +4,7 @@ import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
 
 export const register = async (req, res, next) => {
   try {
-    const { user } = await authService.register(req.body, req);
+    const { user } = await authService.register(req.body);
 
     successResponse(res, { user }, "User registered successfully", 201);
   } catch (error) {
@@ -17,8 +17,7 @@ export const login = async (req, res, next) => {
     const { email, password } = req.body;
     const { user, accessToken, refreshToken } = await authService.login(
       email,
-      password,
-      req
+      password
     );
 
     res.cookie("refreshToken", refreshToken, {
@@ -37,7 +36,7 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    await authService.logout(req.user.id, refreshToken, req);
+    await authService.logout(req.user.id, refreshToken);
 
     res.clearCookie("refreshToken");
 
@@ -59,10 +58,8 @@ export const refresh = async (req, res, next) => {
       );
     }
 
-    const { accessToken, refreshToken } = await authService.refreshAccessToken(
-      oldRefreshToken,
-      req
-    );
+    const { accessToken, refreshToken } =
+      await authService.refreshAccessToken(oldRefreshToken);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,

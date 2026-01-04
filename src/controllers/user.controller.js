@@ -4,7 +4,7 @@ import { successResponse } from "../utils/response.js";
 // CREATE
 export const createUser = async (req, res, next) => {
   try {
-    const user = await userService.createUser(req.body, req);
+    const user = await userService.createUser(req.body);
 
     successResponse(res, { user }, "User created successfully", 201);
   } catch (error) {
@@ -37,7 +37,7 @@ export const getUserById = async (req, res, next) => {
 // UPDATE
 export const updateUser = async (req, res, next) => {
   try {
-    const user = await userService.updateUser(req.params.id, req.body, req);
+    const user = await userService.updateUser(req.params.id, req.body);
 
     successResponse(res, { user }, "User updated successfully");
   } catch (error) {
@@ -48,7 +48,7 @@ export const updateUser = async (req, res, next) => {
 // DELETE
 export const deleteUser = async (req, res, next) => {
   try {
-    await userService.deleteUser(req.params.id, req);
+    await userService.deleteUser(req.params.id);
 
     successResponse(res, null, "User deleted successfully");
   } catch (error) {

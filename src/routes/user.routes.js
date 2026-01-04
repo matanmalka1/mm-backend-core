@@ -11,7 +11,7 @@ import {
   validateCreateUser,
   validateUpdateUser,
   validateUserIdParam,
-} from "../validators/userValidator.js";
+} from "../validators/userValidate.js";
 
 export const router = express.Router();
 // CREATE 

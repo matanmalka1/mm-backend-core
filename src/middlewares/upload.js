@@ -26,34 +26,9 @@ const storage = multer.diskStorage({
   },
 });
 
-// Reject uploads that are not in the allowed MIME types list.
-const fileFilter = (_req, file, cb) => {
-  const allowedTypes = process.env.ALLOWED_FILE_TYPES
-    ? process.env.ALLOWED_FILE_TYPES.split(",").map((value) => value.trim())
-    : ["image/jpeg", "image/png", "image/gif", "application/pdf"];
-
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-    return;
-  }
-
-  cb(
-    new ApiError(
-      API_ERROR_CODES.INVALID_FILE_TYPE,
-      `File type ${file.mimetype} is not allowed`,
-      400
-    ),
-    false
-  );
-};
-
-// Multer middleware with storage, filters, and size limits.
+// Multer middleware with storage only; validation happens in uploadValidate.
 export const upload = multer({
   storage,
-  fileFilter,
-  limits: {
-    fileSize: +process.env.MAX_FILE_SIZE || 5 * 1024 * 1024,
-  },
 });
 
 // Translate multer errors into ApiError responses.

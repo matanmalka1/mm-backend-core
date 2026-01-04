@@ -16,8 +16,8 @@ export const isValidPassword = (value) => {
 };
 
 // Validate positive integer values.
-export const isPositiveInteger = (value) =>
-  Number.isInteger(value) && value > 0;
+// export const isPositiveInteger = (value) =>
+//   Number.isInteger(value) && value > 0;
 
 // Wrap validation errors in ApiError payload.
 export const buildValidationError = (details) =>

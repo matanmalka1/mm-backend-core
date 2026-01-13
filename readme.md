@@ -17,3 +17,13 @@ Local install + npx:
 npm i mm-backend-core
 npx mm-backend-core init my-app
 ```
+
+## Quick Start
+
+```sh
+npm i -g mm-backend-core
+mm-backend-core init my-app
+cd my-app
+npm install
+npm run dev
+```

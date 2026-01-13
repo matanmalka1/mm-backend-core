@@ -34,7 +34,25 @@ if (help || command !== "init") {
 }
 
 const projectName = args[1] || "mm-backend-core-app";
-const targetDir = path.resolve(process.cwd(), projectName);
+const targetDir =
+  projectName === "." ? process.cwd() : path.resolve(process.cwd(), projectName);
+const resolvedProjectName =
+  projectName === "." ? path.basename(targetDir) : projectName;
+
+const isValidPackageSegment = (segment) =>
+  /^[a-z0-9][a-z0-9-._]*$/.test(segment);
+
+const isValidPackageName = (name) => {
+  if (!name || typeof name !== "string") return false;
+  if (name.startsWith("@")) {
+    const [scope, pkg] = name.split("/");
+    if (!scope || !pkg) return false;
+    return (
+      isValidPackageSegment(scope.slice(1)) && isValidPackageSegment(pkg)
+    );
+  }
+  return isValidPackageSegment(name);
+};
 
 const isDirEmpty = async (dir) => {
   try {
@@ -102,6 +120,21 @@ const updatePackageLockName = async (dir, name) => {
 };
 
 const run = async () => {
+  try {
+    await fs.access(templateDir);
+  } catch {
+    console.error(`Template directory not found: ${templateDir}`);
+    process.exit(1);
+  }
+
+  if (projectName !== "." && !isValidPackageName(projectName)) {
+    console.error(
+      `Invalid project name: ${projectName}\n` +
+        "Use lowercase letters, numbers, dots, underscores, and dashes."
+    );
+    process.exit(1);
+  }
+
   if (!force && !(await isDirEmpty(targetDir))) {
     console.error(
       `Target directory is not empty: ${targetDir}\n` +
@@ -110,15 +143,21 @@ const run = async () => {
     process.exit(1);
   }
 
+  if (force && !(await isDirEmpty(targetDir))) {
+    console.log("Warning: --force enabled. Existing files may be overwritten.");
+  }
+
   await copyRecursive(templateDir, targetDir);
   await renameGitignore(targetDir);
-  await updatePackageName(targetDir, projectName);
-  await updatePackageLockName(targetDir, projectName);
+  await updatePackageName(targetDir, resolvedProjectName);
+  await updatePackageLockName(targetDir, resolvedProjectName);
 
   console.log(`Template created at ${targetDir}`);
   console.log("");
   console.log("Next steps:");
-  console.log(`  cd ${projectName}`);
+  if (projectName !== ".") {
+    console.log(`  cd ${projectName}`);
+  }
   console.log("  npm install");
   console.log("  npm run dev");
 };

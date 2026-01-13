@@ -19,6 +19,7 @@ export const errorHandler = (err, req, res, _next) => {
   const { code, message, statusCode, details } = error;
   const stack = error.stack || (err instanceof Error ? err.stack : undefined);
   const userId = req.user ? req.user.id || req.user._id : undefined;
+  const correlationId = req.correlationId;
 
   // Log the error
   const logMessage = {
@@ -30,6 +31,7 @@ export const errorHandler = (err, req, res, _next) => {
     ip: req.ip,
     userAgent: req.get("user-agent"),
     userId,
+    correlationId,
   };
 
   if (statusCode >= 500) {

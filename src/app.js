@@ -20,6 +20,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFound } from "./middlewares/notFound.js";
 import { globalRateLimiter } from "./middlewares/rateLimiter.js";
 import { requestTimeout } from "./middlewares/requestTimeout.js";
+import { correlationId } from "./middlewares/correlationId.js";
 import { requestLogger } from "./middlewares/requestLogger.js";
 import { router } from "./routes/index.js";
 
@@ -49,6 +50,7 @@ configureGoogleStrategy();
 configureGitHubStrategy();
 configureFacebookStrategy();
 app.use(passport.initialize());
+app.use(correlationId);
 
 app.use(requestLogger);
 

@@ -61,7 +61,7 @@ A production-ready, secure REST API boilerplate built with Express.js and MongoD
 ```bash
 # Clone and install
 git clone <repository-url>
-cd template-project
+cd mm-backend-core
 npm install
 
 # Setup environment
@@ -99,7 +99,7 @@ Server will be running at `http://localhost:3000`
 
    ```bash
    git clone <repository-url>
-   cd template-project
+   cd mm-backend-core
    ```
 
 2. **Install dependencies**
@@ -671,7 +671,7 @@ No authentication required.
 ## 📁 Project Structure
 
 ```
-template-project/
+mm-backend-core/
 ├── src/
 │   ├── config/              # Configuration files
 │   │   ├── db.js            # MongoDB connection
@@ -1012,8 +1012,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/template-project/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/template-project/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/mm-backend-core/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/mm-backend-core/discussions)
 
 ## 🙏 Acknowledgments
 

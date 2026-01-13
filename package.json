@@ -1,9 +1,17 @@
 {
-  "name": "template-project",
-  "version": "1.0.0",
-  "description": "",
+  "name": "mm-backend-core",
+  "version": "1.0.1",
+  "description": "Express + MongoDB REST API template with JWT auth, refresh tokens, RBAC, OAuth, and uploads.",
   "type": "module",
   "main": "src/server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matanmalka1/mm-backend-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matanmalka1/mm-backend-core/issues"
+  },
+  "homepage": "https://github.com/matanmalka1/mm-backend-core#readme",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
@@ -24,9 +32,13 @@
     "mongoose",
     "rest-api",
     "jwt",
-    "authentication"
+    "authentication",
+    "rbac",
+    "oauth",
+    "template",
+    "refresh-token"
   ],
-  "author": "",
+  "author": "Matan Malka",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -6,6 +6,11 @@ import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import passport from "passport";
 
+import "./models/Permission.js";
+import "./models/RefreshToken.js";
+import "./models/Role.js";
+import "./models/User.js";
+
 import {
   configureGoogleStrategy,
   configureGitHubStrategy,

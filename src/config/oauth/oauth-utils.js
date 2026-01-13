@@ -5,8 +5,42 @@ import { User } from "../../models/User.js";
 import { logger } from "../../utils/logger.js";
 import { hashPassword } from "../../utils/password.js";
 
+const normalizeUrl = (value) => value.replace(/\/+$/, "");
+
+const buildApiBaseUrl = () => {
+  const rawApiUrl = process.env.API_URL;
+  const apiPrefix = process.env.API_PREFIX || "/api/v1";
+  const normalizedPrefix = apiPrefix.startsWith("/") ? apiPrefix : `/${apiPrefix}`;
+
+  if (!rawApiUrl) {
+    return `http://localhost:3000${normalizedPrefix}`;
+  }
+
+  const normalizedApiUrl = normalizeUrl(rawApiUrl);
+  if (normalizedApiUrl.endsWith(normalizedPrefix)) {
+    return normalizedApiUrl;
+  }
+
+  return `${normalizedApiUrl}${normalizedPrefix}`;
+};
+
 const oauthCallbackUrl = (providerKey) =>
-  `${process.env.API_URL || "http://localhost:3000/api/v1"}/auth/${providerKey}/callback`;
+  `${buildApiBaseUrl()}/auth/${providerKey}/callback`;
+
+const getDisplayName = (profile) => {
+  if (profile?.displayName) return profile.displayName;
+  const firstName = profile?.name?.givenName;
+  const lastName = profile?.name?.familyName;
+  const combinedName = [firstName, lastName].filter(Boolean).join(" ");
+  return combinedName || profile?.username || "User";
+};
+
+const getEmailFromProfile = (profile) => {
+  const emailEntry = profile?.emails?.[0];
+  const isVerified = emailEntry?.verified;
+  if (isVerified === false) return null;
+  return emailEntry?.value || profile?.email || null;
+};
 
 const oauthVerify = (providerKey) => async (_accessToken, _refreshToken, profile, done) => {
   try {
@@ -28,14 +62,16 @@ export const findOrCreateUser = async (profile, provider) => {
       return user;
     }
 
-    const email = profile.emails?.[0]?.value || profile.email;
-    user = await User.findOne({ email });
+    const email = getEmailFromProfile(profile);
+    if (email) {
+      user = await User.findOne({ email });
+    }
 
     if (user) {
       if (!user.oauth) user.oauth = {};
       user.oauth[provider] = {
         id: profile.id,
-        displayName: profile.displayName || profile.name,
+        displayName: getDisplayName(profile),
       };
       user.lastLogin = new Date();
       await user.save();
@@ -67,7 +103,7 @@ export const findOrCreateUser = async (profile, provider) => {
       oauth: {
         [provider]: {
           id: profile.id,
-          displayName: profile.displayName || profile.name,
+          displayName: getDisplayName(profile),
         },
       },
       lastLogin: new Date(),

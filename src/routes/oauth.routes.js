@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 import express from "express";
 import passport from "passport";
 
@@ -6,6 +8,51 @@ import { logger } from "../utils/logger.js";
 
 export const router = express.Router();
 
+const OAUTH_STATE_COOKIE = "oauthState";
+const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+
+const getFrontendBase = () =>
+  process.env.FRONTEND_URL || "http://localhost:5173";
+
+const oauthStateCookieOptions = {
+  httpOnly: true,
+  secure: process.env.COOKIE_SECURE
+    ? process.env.COOKIE_SECURE === "true"
+    : process.env.NODE_ENV === "production",
+  sameSite: process.env.COOKIE_SAME_SITE || "lax",
+  maxAge: OAUTH_STATE_TTL_MS,
+  path: "/",
+};
+
+const setOAuthStateCookie = (res, state) => {
+  res.cookie(OAUTH_STATE_COOKIE, state, oauthStateCookieOptions);
+};
+
+const clearOAuthStateCookie = (res) => {
+  res.clearCookie(OAUTH_STATE_COOKIE, oauthStateCookieOptions);
+};
+
+const buildState = () => crypto.randomBytes(32).toString("hex");
+
+const startOAuth = (provider, options) => (req, res, next) => {
+  const state = buildState();
+  setOAuthStateCookie(res, state);
+  return passport.authenticate(provider, { ...options, state })(req, res, next);
+};
+
+const validateOAuthState = (providerLabel) => (req, res, next) => {
+  const state = req.query.state;
+  const cookieState = req.cookies?.[OAUTH_STATE_COOKIE];
+  clearOAuthStateCookie(res);
+
+  if (!state || !cookieState || state !== cookieState) {
+    logger.warn("OAuth state validation failed", { provider: providerLabel });
+    return res.redirect(`${getFrontendBase()}/login?error=invalid_state`);
+  }
+
+  return next();
+};
+
 const handleOAuthCallback = async (req, res) => {
   try {
     const user = req.user;
@@ -13,7 +60,7 @@ const handleOAuthCallback = async (req, res) => {
     if (!user) {
       logger.warn("OAuth callback: User not found");
       return res.redirect(
-        `${process.env.FRONTEND_URL || "http://localhost:5173"}/login?error=auth_failed`
+        `${getFrontendBase()}/login?error=auth_failed`
       );
     }
 
@@ -30,8 +77,7 @@ const handleOAuthCallback = async (req, res) => {
       path: "/",
     });
 
-    const frontendBase = process.env.FRONTEND_URL || "http://localhost:5173";
-    const redirectUrl = `${frontendBase}/auth/callback#accessToken=${encodeURIComponent(
+    const redirectUrl = `${getFrontendBase()}/auth/callback#accessToken=${encodeURIComponent(
       accessToken
     )}&userId=${encodeURIComponent(user._id.toString())}`;
 
@@ -40,41 +86,44 @@ const handleOAuthCallback = async (req, res) => {
     logger.error("OAuth callback error:", error.message);
     res.redirect(
       `${
-        process.env.FRONTEND_URL || "http://localhost:5173"
-      }/login?error=server_error`
+      process.env.FRONTEND_URL || "http://localhost:5173"
+    }/login?error=server_error`
     );
   }
 };
 
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  startOAuth("google", { scope: ["profile", "email"] })
 );
 
 router.get(
   "/google/callback",
+  validateOAuthState("google"),
   passport.authenticate("google", { session: false }),
   handleOAuthCallback
 );
 
 router.get(
   "/github",
-  passport.authenticate("github", { scope: ["user:email"] })
+  startOAuth("github", { scope: ["user:email"] })
 );
 
 router.get(
   "/github/callback",
+  validateOAuthState("github"),
   passport.authenticate("github", { session: false }),
   handleOAuthCallback
 );
 
 router.get(
   "/facebook",
-  passport.authenticate("facebook", { scope: ["email", "public_profile"] })
+  startOAuth("facebook", { scope: ["email", "public_profile"] })
 );
 
 router.get(
   "/facebook/callback",
+  validateOAuthState("facebook"),
   passport.authenticate("facebook", { session: false }),
   handleOAuthCallback
 );

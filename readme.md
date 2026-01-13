@@ -23,8 +23,8 @@ A production-ready, secure REST API boilerplate built with Express.js and MongoD
 - JWT-based authentication with access and refresh tokens
 - Refresh token rotation (one-time use, server-side revocation)
 - Role-based access control (RBAC)
-- Permission-based authorization
-- OAuth 2.0 integration (Google, GitHub, Facebook)
+- Permission-based authorization helpers
+- OAuth 2.0 integration (Google, GitHub, Facebook) with state validation
 
 ### Security
 
@@ -44,6 +44,8 @@ A production-ready, secure REST API boilerplate built with Express.js and MongoD
 - Pagination support
 - File upload with validation
 - Comprehensive logging with Winston
+- Correlation IDs per request
+- Request timeout guard
 
 ### Development
 
@@ -165,12 +167,19 @@ PORT=3000
 
 # Database
 MONGODB_URI=mongodb://localhost:27017/my_app_db
+MONGO_MAX_POOL_SIZE=20
+MONGO_MIN_POOL_SIZE=2
 
 # JWT Secrets (Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 JWT_ACCESS_SECRET=your_generated_secret_here
 JWT_REFRESH_SECRET=your_generated_secret_here
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
+
+# Password Reset
+PASSWORD_RESET_EXPIRES_IN=1h
+PASSWORD_RESET_EXPIRES_IN_MS=3600000
+PASSWORD_RESET_TOKEN_SECRET=your_generated_secret_here
 
 # Cookies
 COOKIE_SECURE=false          # Set to true in production with HTTPS
@@ -181,6 +190,7 @@ CORS_ORIGIN=http://localhost:3000,http://localhost:5173
 
 # URLs
 API_URL=http://localhost:3000/api/v1
+API_PREFIX=/api/v1
 FRONTEND_URL=http://localhost:5173
 
 # Rate Limiting
@@ -188,9 +198,17 @@ RATE_LIMIT_WINDOW_MS=900000          # 15 minutes
 RATE_LIMIT_MAX_REQUESTS=100
 AUTH_RATE_LIMIT_WINDOW_MS=900000     # 15 minutes
 AUTH_RATE_LIMIT_MAX_REQUESTS=10
+REFRESH_RATE_LIMIT_WINDOW_MS=900000
+REFRESH_RATE_LIMIT_MAX_REQUESTS=10
+PASSWORD_CHANGE_RATE_LIMIT_WINDOW_MS=900000
+PASSWORD_CHANGE_RATE_LIMIT_MAX_REQUESTS=5
+FORGOT_PASSWORD_RATE_LIMIT_WINDOW_MS=3600000
+FORGOT_PASSWORD_RATE_LIMIT_MAX_REQUESTS=3
+OAUTH_RATE_LIMIT_WINDOW_MS=900000
+OAUTH_RATE_LIMIT_MAX_REQUESTS=20
 
-# Body Size Limits
-BODY_LIMIT=1mb
+# Request Timeout
+REQUEST_TIMEOUT_MS=30000
 
 # File Upload
 MAX_FILE_SIZE=5242880                # 5MB in bytes
@@ -198,7 +216,6 @@ ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif,application/pdf
 
 # Logging
 LOG_LEVEL=info
-LOG_FILE=logs/app.log
 
 # OAuth (Optional - leave empty if not using)
 GOOGLE_CLIENT_ID=
@@ -256,13 +273,13 @@ npm run seed
 
 ### Default Roles & Permissions
 
-| Role    | Permissions                                                     |
-| ------- | --------------------------------------------------------------- |
-| Admin   | All permissions (full system access)                            |
-| Manager | users:read, users:create, users:update, roles:read, upload:file |
-| Editor  | users:read, users:update, upload:file                           |
-| Support | users:read, health:check                                        |
-| User    | Basic authenticated access                                      |
+| Role    | Permissions                                                                 |
+| ------- | --------------------------------------------------------------------------- |
+| admin   | All permissions (full system access)                                        |
+| manager | users.read, users.create, users.update, roles.read, upload.create, health.read |
+| editor  | users.read, users.update, upload.create                                     |
+| support | users.read, health.read                                                     |
+| user    | health.read, auth.refresh, auth.logout                                      |
 
 ### Test Users
 
@@ -270,11 +287,13 @@ All users have password: `Password123!`
 
 | Email               | Role    | Use Case                         |
 | ------------------- | ------- | -------------------------------- |
-| admin@example.com   | Admin   | Full system administration       |
-| manager@example.com | Manager | User and role management         |
-| editor@example.com  | Editor  | Content editing and file uploads |
-| support@example.com | Support | Read-only support access         |
-| user1@example.com   | User    | Regular user with basic access   |
+| admin@example.com   | admin   | Full system administration       |
+| manager@example.com | manager | User and role management         |
+| editor@example.com  | editor  | Content editing and file uploads |
+| support@example.com | support | Read-only support access         |
+| user1@example.com   | user    | Regular user with basic access   |
+
+Additional user accounts `user2@example.com` through `user6@example.com` are also seeded with the same password and role.
 
 ## 📚 API Documentation
 
@@ -287,7 +306,7 @@ http://localhost:3000/api/v1
 ### Authentication Flow
 
 ```
-1. Register/Login → Receive access token + refresh token (httpOnly cookie)
+1. Register → Account created; Login → Receive access token + refresh token (httpOnly cookie)
 2. Use access token in Authorization header for protected routes
 3. When access token expires → Call /auth/refresh to get new access token
 4. Refresh token is rotated on each refresh; the old token is revoked and reuse returns 401
@@ -309,25 +328,13 @@ Content-Type: application/json
 }
 ```
 
-**Response (201):**
+**Response (200):**
 
 ```json
 {
   "success": true,
-  "data": {
-    "user": {
-      "_id": "507f1f77bcf86cd799439011",
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "isActive": true,
-      "role": {
-        "_id": "507f1f77bcf86cd799439012",
-        "name": "User"
-      }
-    }
-  },
-  "message": "User registered successfully"
+  "data": null,
+  "message": "Check your email"
 }
 ```
 
@@ -434,8 +441,15 @@ Content-Type: application/json
   "firstName": "Jane",
   "lastName": "Doe",
   "phoneNumber": "+1 555 123 4567",
-  "dateOfBirth": "1990-01-01",
-  "address": "123 Main St, City, Country"
+  "profilePicture": "https://example.com/avatar.png",
+  "bio": "Short bio",
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "City",
+    "state": "ST",
+    "zipCode": "12345",
+    "country": "US"
+  }
 }
 ```
 
@@ -454,12 +468,12 @@ GET /api/v1/auth/facebook/callback # Facebook OAuth callback
 
 ### User Management Endpoints
 
-All user management endpoints require authentication and appropriate permissions.
+All user management endpoints require authentication.
 
 #### List Users (with Pagination)
 
 ```http
-GET /api/v1/users?page=1&limit=10&sortBy=createdAt&order=desc
+GET /api/v1/users?page=1&limit=10
 Authorization: Bearer <access_token>
 ```
 
@@ -467,9 +481,6 @@ Authorization: Bearer <access_token>
 
 - `page` (optional): Page number (default: 1)
 - `limit` (optional): Items per page (default: 10, max: 100)
-- `sortBy` (optional): Field to sort by (default: createdAt)
-- `order` (optional): Sort order - asc/desc (default: desc)
-
 **Response (200):**
 
 ```json
@@ -493,9 +504,7 @@ Authorization: Bearer <access_token>
       "page": 1,
       "limit": 10,
       "totalPages": 5,
-      "totalCount": 50,
-      "hasNextPage": true,
-      "hasPrevPage": false
+      "totalCount": 50
     }
   },
   "message": "Users retrieved successfully"
@@ -525,7 +534,7 @@ Content-Type: application/json
 }
 ```
 
-**Required Permission:** `users:create`
+**Required Role:** `admin`
 
 #### Update User
 
@@ -550,7 +559,7 @@ DELETE /api/v1/users/:id
 Authorization: Bearer <access_token>
 ```
 
-**Required Permission:** `users:delete`
+**Required Role:** `admin` plus `users:delete` permission
 
 ### File Upload
 
@@ -566,19 +575,19 @@ file: <binary file data>
 
 - Maximum file size: 5MB
 - Allowed types: JPEG, PNG, GIF, PDF
-- Required permission: `upload:file`
+- Requires authentication
 
-**Response (200):**
+**Response (201):**
 
 ```json
 {
   "success": true,
   "data": {
-    "filename": "1704369600000-file.jpg",
-    "originalName": "file.jpg",
+    "filename": "file-1704369600000-123456789.jpg",
+    "originalname": "file.jpg",
     "size": 1234567,
     "mimetype": "image/jpeg",
-    "path": "uploads/1704369600000-file.jpg"
+    "path": "/uploads/file-1704369600000-123456789.jpg"
   },
   "message": "File uploaded successfully"
 }
@@ -602,11 +611,7 @@ No authentication required.
     "uptime": 123.456,
     "timestamp": "2024-01-04T12:00:00.000Z",
     "environment": "development",
-    "database": "connected",
-    "memory": {
-      "used": 50.5,
-      "total": 100
-    }
+    "database": "connected"
   },
   "message": "Server is healthy"
 }
@@ -659,6 +664,7 @@ No authentication required.
 | 403         | `AUTHORIZATION_ERROR`   | Insufficient permissions     |
 | 404         | `RESOURCE_NOT_FOUND`    | Requested resource not found |
 | 429         | `RATE_LIMIT_EXCEEDED`   | Too many requests            |
+| 503         | `REQUEST_TIMEOUT`       | Request timed out            |
 | 500         | `SERVER_ERROR`          | Internal server error        |
 | 500         | `DATABASE_ERROR`        | Database operation failed    |
 
@@ -668,18 +674,27 @@ No authentication required.
 template-project/
 ├── src/
 │   ├── config/              # Configuration files
-│   │   └── database.js      # MongoDB connection
+│   │   ├── db.js            # MongoDB connection
+│   │   ├── env.js           # Environment validation
+│   │   ├── oauth.js         # Passport strategy wiring
+│   │   └── oauth/           # OAuth provider strategies
+│   │       └── oauth-utils.js
 │   ├── constants/           # Application constants
-│   │   └── errorCodes.js    # Error code definitions
+│   │   └── api-error-codes.js
 │   ├── controllers/         # Request handlers
 │   │   ├── auth.controller.js
 │   │   ├── user.controller.js
 │   │   └── upload.controller.js
 │   ├── middlewares/         # Express middlewares
-│   │   ├── auth.middleware.js      # JWT verification
+│   │   ├── auth.middleware.js      # JWT verification + authZ helpers
+│   │   ├── correlationId.js        # Correlation IDs
 │   │   ├── errorHandler.js         # Global error handler
-│   │   ├── permission.middleware.js # Permission checking
-│   │   └── upload.middleware.js    # File upload validation
+│   │   ├── rateLimiter.js          # Rate limiting
+│   │   ├── requestLogger.js        # HTTP request logging
+│   │   ├── requestSanitizer.js     # Mongo sanitize
+│   │   ├── requestTimeout.js       # Request timeout guard
+│   │   ├── upload.js               # File upload handling
+│   │   └── notFound.js             # 404 handler
 │   ├── models/              # Mongoose schemas
 │   │   ├── User.js
 │   │   ├── Role.js
@@ -687,46 +702,58 @@ template-project/
 │   │   └── RefreshToken.js
 │   ├── routes/              # Route definitions
 │   │   ├── auth.routes.js
+│   │   ├── health.routes.js
+│   │   ├── oauth.routes.js
 │   │   ├── user.routes.js
 │   │   ├── upload.routes.js
 │   │   └── index.js
 │   ├── services/            # Business logic
-│   │   ├── auth.service.js
+│   │   ├── auth/
+│   │   │   ├── core.service.js
+│   │   │   ├── password.service.js
+│   │   │   ├── profile.service.js
+│   │   │   └── token.service.js
 │   │   ├── user.service.js
-│   │   └── token.service.js
 │   ├── utils/               # Utility functions
-│   │   ├── ApiResponse.js         # Response formatter
-│   │   ├── ApiError.js            # Error class
+│   │   ├── auth-helpers.js        # Auth helpers
+│   │   ├── cookie-options.js      # Cookie defaults
+│   │   ├── error-factories.js     # Error helpers
+│   │   ├── jwt.js                 # JWT helpers
 │   │   ├── asyncHandler.js        # Async wrapper
-│   │   └── logger.js              # Winston logger
+│   │   ├── logger.js              # Winston logger
+│   │   ├── pagination.js          # Pagination helpers
+│   │   ├── password.js            # Password helpers
+│   │   ├── permission-utils.js    # Permission helpers
+│   │   ├── response.js            # Response formatter
+│   │   └── role-utils.js          # Role helpers
 │   ├── validators/          # Input validation schemas
-│   │   ├── auth.validator.js
-│   │   └── user.validator.js
+│   │   ├── authValidate.js
+│   │   ├── uploadValidate.js
+│   │   ├── userValidate.js
+│   │   └── validatorUtils.js
 │   ├── app.js               # Express app setup
 │   ├── server.js            # Entry point
 │   └── seed.js              # Database seeder
 ├── tests/                   # Test files
-│   ├── setup.js             # Test configuration
-│   └── auth.test.js         # Auth endpoint tests
+│   └── setup.js             # Test configuration
 ├── uploads/                 # Uploaded files (gitignored)
 ├── logs/                    # Application logs (gitignored)
 ├── .env.example             # Environment template
-├── .env.development         # Dev environment (gitignored)
+├── .env.docker              # Docker environment defaults
 ├── .dockerignore
 ├── .gitignore
-├── .prettierrc.json         # Prettier configuration
 ├── docker-compose.yml       # Docker Compose setup
 ├── Dockerfile               # Docker image definition
 ├── eslint.config.cjs        # ESLint configuration
 ├── package.json
-├── README.md
+├── readme.md
 └── vitest.config.js         # Test configuration
 ```
 
 ## 🔒 Security Features
 
 - ✅ **Password Security**
-  - Bcrypt hashing with 10 salt rounds
+  - Bcrypt hashing with 12 salt rounds
   - Password complexity requirements
   - Secure password change flow
 
@@ -747,6 +774,8 @@ template-project/
   - Input validation with Zod
   - MongoDB injection prevention
   - XSS protection via Helmet
+  - Correlation IDs for tracing
+  - Request timeout guard
 
 - ✅ **CORS Configuration**
   - Whitelisted origins only
@@ -904,7 +933,9 @@ git push heroku main
 
 ```bash
 npm run dev          # Start development server with hot reload
+npm run dev:env      # Start dev server with NODE_ENV=development
 npm start            # Start production server
+npm run start:prod   # Start production server with NODE_ENV=production
 npm run seed         # Seed database with test data
 npm run lint         # Run ESLint
 npm run lint:fix     # Fix ESLint errors

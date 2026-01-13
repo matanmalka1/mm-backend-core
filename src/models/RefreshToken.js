@@ -33,6 +33,7 @@ const refreshTokenSchema = new mongoose.Schema(
 );
 
 // Indexes
+refreshTokenSchema.index({ token: 1 }, { unique: true });
 refreshTokenSchema.index({ user: 1 });
 
 // Auto-delete expired tokens (TTL index)

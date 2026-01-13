@@ -60,8 +60,7 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-
 export const stream = {
   // Forward Morgan messages into winston.
-  write: (message) => logger.info(message.trim())
+  write: (message) => logger.info(message.trim()),
 };

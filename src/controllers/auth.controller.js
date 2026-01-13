@@ -55,9 +55,8 @@ export const refresh = async (req, res) => {
   if (!oldRefreshToken) {
     throw refreshTokenInvalidError("Refresh token not found");
   }
-  const { accessToken, refreshToken } = await refreshAccessToken(
-    oldRefreshToken
-  );
+  const { accessToken, refreshToken } =
+    await refreshAccessToken(oldRefreshToken);
 
   res.cookie("refreshToken", refreshToken, cookieOptions);
 

@@ -22,6 +22,7 @@ module.exports = [
       ...promisePlugin.configs.recommended.rules,
       "n/no-missing-import": "off",
       "n/no-unsupported-features/es-syntax": "off",
+      "import/no-named-as-default": "off",
       "import/extensions": ["error", "ignorePackages", { js: "always" }],
       "import/order": [
         "error",
@@ -31,6 +32,19 @@ module.exports = [
         },
       ],
       "no-console": "off",
+    },
+  },
+  {
+    files: ["src/server.js", "src/seed.js"],
+    rules: {
+      "n/no-process-exit": "off",
+    },
+  },
+  {
+    files: ["tests/**/*.js", "vitest.config.js"],
+    rules: {
+      "n/no-unpublished-import": "off",
+      "import/no-unresolved": "off",
     },
   },
 ];

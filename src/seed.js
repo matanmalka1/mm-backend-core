@@ -1,28 +1,8 @@
-import fs from "fs";
-import path from "path";
-
+import "./config/env.js";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 
 import { connectDB, disconnectDB } from "./config/db.js";
 import { User, Role, Permission } from "./models/index.js";
-
-const envFile =
-  process.env.NODE_ENV === "production"
-    ? ".env"
-    : `.env.${process.env.NODE_ENV || "development"}`;
-
-const cwd = process.cwd();
-const preferredDevEnv = path.join(cwd, ".env.development");
-const envPath = path.join(cwd, envFile);
-
-if (!process.env.NODE_ENV && fs.existsSync(preferredDevEnv)) {
-  dotenv.config({ path: preferredDevEnv });
-} else if (fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-} else {
-  dotenv.config();
-}
 
 // Seed database with roles, permissions, and default users.
 const seed = async () => {

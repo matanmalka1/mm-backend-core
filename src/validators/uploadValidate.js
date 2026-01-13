@@ -14,7 +14,7 @@ export const validateUpload = async (req, _res, next) => {
     const allowedTypes = process.env.ALLOWED_FILE_TYPES
       ? process.env.ALLOWED_FILE_TYPES.split(",").map((value) => value.trim())
       : ["image/jpeg", "image/png", "image/gif", "application/pdf"];
-      
+
     const maxFileSize = +process.env.MAX_FILE_SIZE || 5 * 1024 * 1024;
 
     if (!allowedTypes.includes(req.file.mimetype)) {

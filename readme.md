@@ -24,6 +24,7 @@ Production-ready REST API built with Express.js and MongoDB/Mongoose.
 1. **Clone the repository**
 
 2. **Install dependencies**:
+
 ```bash
 npm install
 ```
@@ -33,6 +34,7 @@ npm install
    - **Cloud**: Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 
 4. **Configure environment variables**:
+
 ```bash
 # Copy the example file
 cp .env.example .env.development
@@ -44,11 +46,13 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 5. **Update `.env.development`** with your values
 
 6. **Seed the database**:
+
 ```bash
 npm run seed
 ```
 
 7. **Start the server**:
+
 ```bash
 npm run dev
 ```
@@ -57,41 +61,43 @@ npm run dev
 
 Create a `.env.development` file with these variables (start from `.env.example`):
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment | `development` |
-| `PORT` | Server port | `3000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/myapp` |
-| `JWT_ACCESS_SECRET` | JWT access token secret (min 32 chars) | Generate with crypto |
-| `JWT_REFRESH_SECRET` | JWT refresh token secret (min 32 chars) | Generate with crypto |
-| `JWT_ACCESS_EXPIRES_IN` | Access token expiry | `15m` |
-| `JWT_REFRESH_EXPIRES_IN` | Refresh token expiry | `7d` |
-| `COOKIE_SECURE` | Use secure cookies (https only) | `false` (dev), `true` (prod) |
-| `COOKIE_SAME_SITE` | Cookie same-site policy | `lax` |
-| `CORS_ORIGIN` | Allowed CORS origins (comma-separated) | `http://localhost:3000,http://localhost:5173` |
-| `RATE_LIMIT_WINDOW_MS` | Global rate limit window | `900000` (15 min) |
-| `RATE_LIMIT_MAX_REQUESTS` | Global rate limit max requests | `100` |
-| `AUTH_RATE_LIMIT_WINDOW_MS` | Auth rate limit window | `900000` |
-| `AUTH_RATE_LIMIT_MAX_REQUESTS` | Auth rate limit max requests | `10` |
-| `MAX_FILE_SIZE` | Max upload size (bytes) | `5242880` (5MB) |
-| `ALLOWED_FILE_TYPES` | Allowed MIME types | `image/jpeg,image/png,image/gif,application/pdf` |
-| `API_URL` | Backend base URL for OAuth callbacks | `http://localhost:3000/api/v1` |
-| `FRONTEND_URL` | Frontend base URL for OAuth redirects | `http://localhost:5173` |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | OAuth provider value |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | OAuth provider value |
-| `GITHUB_CLIENT_ID` | GitHub OAuth client ID | OAuth provider value |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | OAuth provider value |
-| `FACEBOOK_CLIENT_ID` | Facebook OAuth client ID | OAuth provider value |
-| `FACEBOOK_CLIENT_SECRET` | Facebook OAuth client secret | OAuth provider value |
+| Variable                       | Description                             | Example                                          |
+| ------------------------------ | --------------------------------------- | ------------------------------------------------ |
+| `NODE_ENV`                     | Environment                             | `development`                                    |
+| `PORT`                         | Server port                             | `3000`                                           |
+| `MONGODB_URI`                  | MongoDB connection string               | `mongodb://localhost:27017/myapp`                |
+| `JWT_ACCESS_SECRET`            | JWT access token secret (min 32 chars)  | Generate with crypto                             |
+| `JWT_REFRESH_SECRET`           | JWT refresh token secret (min 32 chars) | Generate with crypto                             |
+| `JWT_ACCESS_EXPIRES_IN`        | Access token expiry                     | `15m`                                            |
+| `JWT_REFRESH_EXPIRES_IN`       | Refresh token expiry                    | `7d`                                             |
+| `COOKIE_SECURE`                | Use secure cookies (https only)         | `false` (dev), `true` (prod)                     |
+| `COOKIE_SAME_SITE`             | Cookie same-site policy                 | `lax`                                            |
+| `CORS_ORIGIN`                  | Allowed CORS origins (comma-separated)  | `http://localhost:3000,http://localhost:5173`    |
+| `RATE_LIMIT_WINDOW_MS`         | Global rate limit window                | `900000` (15 min)                                |
+| `RATE_LIMIT_MAX_REQUESTS`      | Global rate limit max requests          | `100`                                            |
+| `AUTH_RATE_LIMIT_WINDOW_MS`    | Auth rate limit window                  | `900000`                                         |
+| `AUTH_RATE_LIMIT_MAX_REQUESTS` | Auth rate limit max requests            | `10`                                             |
+| `MAX_FILE_SIZE`                | Max upload size (bytes)                 | `5242880` (5MB)                                  |
+| `ALLOWED_FILE_TYPES`           | Allowed MIME types                      | `image/jpeg,image/png,image/gif,application/pdf` |
+| `API_URL`                      | Backend base URL for OAuth callbacks    | `http://localhost:3000/api/v1`                   |
+| `FRONTEND_URL`                 | Frontend base URL for OAuth redirects   | `http://localhost:5173`                          |
+| `GOOGLE_CLIENT_ID`             | Google OAuth client ID                  | OAuth provider value                             |
+| `GOOGLE_CLIENT_SECRET`         | Google OAuth client secret              | OAuth provider value                             |
+| `GITHUB_CLIENT_ID`             | GitHub OAuth client ID                  | OAuth provider value                             |
+| `GITHUB_CLIENT_SECRET`         | GitHub OAuth client secret              | OAuth provider value                             |
+| `FACEBOOK_CLIENT_ID`           | Facebook OAuth client ID                | OAuth provider value                             |
+| `FACEBOOK_CLIENT_SECRET`       | Facebook OAuth client secret            | OAuth provider value                             |
 
 ### MongoDB Connection Strings
 
 **Local MongoDB**:
+
 ```
 MONGODB_URI=mongodb://localhost:27017/your-database-name
 ```
 
 **MongoDB Atlas** (cloud):
+
 ```
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/your-database-name?retryWrites=true&w=majority
 ```
@@ -103,23 +109,27 @@ npm run dev      # Start development server with hot reload
 npm start        # Start production server
 npm run seed     # Seed database with roles, permissions, and test users
 npm run jscpd    # Detect copy/paste duplicates
+npm test         # Run tests (Vitest)
 ```
+
+Tests use an in-memory MongoDB server and do not require a running database.
 
 ## Default Users (after seeding)
 
 All users have password: `Password123!`
 
-| Email | Role | Permissions |
-|-------|------|-------------|
-| admin@example.com | Admin | All permissions |
+| Email               | Role    | Permissions                                        |
+| ------------------- | ------- | -------------------------------------------------- |
+| admin@example.com   | Admin   | All permissions                                    |
 | manager@example.com | Manager | Users (read, create, update), roles (read), upload |
-| editor@example.com | Editor | Users (read, update), upload |
-| support@example.com | Support | Users (read), health check |
-| user1@example.com | User | Basic access |
+| editor@example.com  | Editor  | Users (read, update), upload                       |
+| support@example.com | Support | Users (read), health check                         |
+| user1@example.com   | User    | Basic access                                       |
 
 ## API Documentation
 
 ### Base URL
+
 ```
 http://localhost:3000/api/v1
 ```
@@ -127,6 +137,7 @@ http://localhost:3000/api/v1
 ### Authentication Endpoints
 
 #### Register
+
 ```http
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -140,6 +151,7 @@ Content-Type: application/json
 ```
 
 **Response** (201):
+
 ```json
 {
   "success": true,
@@ -158,6 +170,7 @@ Content-Type: application/json
 ```
 
 #### Login
+
 ```http
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -169,6 +182,7 @@ Content-Type: application/json
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -183,12 +197,14 @@ Content-Type: application/json
 **Note**: `refreshToken` is set as an httpOnly cookie.
 
 #### Refresh Token
+
 ```http
 POST /api/v1/auth/refresh
 Cookie: refreshToken=...
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -200,12 +216,14 @@ Cookie: refreshToken=...
 ```
 
 #### Get Current User
+
 ```http
 GET /api/v1/auth/me
 Authorization: Bearer <access_token>
 ```
 
 #### Logout
+
 ```http
 POST /api/v1/auth/logout
 Authorization: Bearer <access_token>
@@ -213,6 +231,7 @@ Cookie: refreshToken=...
 ```
 
 #### Change Password
+
 ```http
 POST /api/v1/auth/change-password
 Authorization: Bearer <access_token>
@@ -225,6 +244,7 @@ Content-Type: application/json
 ```
 
 #### Update Profile
+
 ```http
 PUT /api/v1/auth/profile
 Authorization: Bearer <access_token>
@@ -238,6 +258,7 @@ Content-Type: application/json
 ```
 
 #### OAuth Login
+
 ```http
 GET /api/v1/auth/google
 GET /api/v1/auth/github
@@ -249,16 +270,19 @@ GET /api/v1/auth/facebook
 All user endpoints require authentication.
 
 #### List Users (with pagination)
+
 ```http
 GET /api/v1/users?page=1&limit=10
 Authorization: Bearer <access_token>
 ```
 
 **Query Parameters**:
+
 - `page` (optional): Page number (default: 1)
 - `limit` (optional): Items per page (default: 10, max: 100)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -274,12 +298,14 @@ Authorization: Bearer <access_token>
 ```
 
 #### Get User by ID
+
 ```http
 GET /api/v1/users/:id
 Authorization: Bearer <access_token>
 ```
 
 #### Create User (Admin only)
+
 ```http
 POST /api/v1/users
 Authorization: Bearer <access_token>
@@ -295,6 +321,7 @@ Content-Type: application/json
 ```
 
 #### Update User
+
 ```http
 PUT /api/v1/users/:id
 Authorization: Bearer <access_token>
@@ -307,6 +334,7 @@ Content-Type: application/json
 ```
 
 #### Delete User (Admin only)
+
 ```http
 DELETE /api/v1/users/:id
 Authorization: Bearer <access_token>
@@ -323,6 +351,7 @@ file: <binary file data>
 ```
 
 **Constraints**:
+
 - Max size: 5MB
 - Allowed types: JPEG, PNG, GIF, PDF
 
@@ -333,6 +362,7 @@ GET /api/v1/health
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -350,6 +380,7 @@ GET /api/v1/health
 ## API Response Format
 
 ### Success Response
+
 ```json
 {
   "success": true,
@@ -359,6 +390,7 @@ GET /api/v1/health
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -372,22 +404,22 @@ GET /api/v1/health
 
 ## Error Codes
 
-| Code | Description | Status |
-|------|-------------|--------|
-| `VALIDATION_ERROR` | Input validation failed | 400 |
-| `AUTHENTICATION_ERROR` | Authentication failed | 401 |
-| `AUTHORIZATION_ERROR` | Insufficient permissions | 403 |
-| `RESOURCE_NOT_FOUND` | Resource not found | 404 |
-| `DUPLICATE_RESOURCE` | Resource already exists | 400 |
-| `TOKEN_EXPIRED` | JWT token expired | 401 |
-| `INVALID_TOKEN` | Invalid JWT token | 401 |
-| `INVALID_CREDENTIALS` | Invalid email/password | 401 |
-| `REFRESH_TOKEN_INVALID` | Invalid refresh token | 401 |
-| `REFRESH_TOKEN_EXPIRED` | Refresh token expired | 401 |
-| `FILE_UPLOAD_ERROR` | File upload failed | 400 |
-| `FILE_TOO_LARGE` | File exceeds size limit | 400 |
-| `INVALID_FILE_TYPE` | File type not allowed | 400 |
-| `SERVER_ERROR` | Internal server error | 500 |
+| Code                    | Description              | Status |
+| ----------------------- | ------------------------ | ------ |
+| `VALIDATION_ERROR`      | Input validation failed  | 400    |
+| `AUTHENTICATION_ERROR`  | Authentication failed    | 401    |
+| `AUTHORIZATION_ERROR`   | Insufficient permissions | 403    |
+| `RESOURCE_NOT_FOUND`    | Resource not found       | 404    |
+| `DUPLICATE_RESOURCE`    | Resource already exists  | 400    |
+| `TOKEN_EXPIRED`         | JWT token expired        | 401    |
+| `INVALID_TOKEN`         | Invalid JWT token        | 401    |
+| `INVALID_CREDENTIALS`   | Invalid email/password   | 401    |
+| `REFRESH_TOKEN_INVALID` | Invalid refresh token    | 401    |
+| `REFRESH_TOKEN_EXPIRED` | Refresh token expired    | 401    |
+| `FILE_UPLOAD_ERROR`     | File upload failed       | 400    |
+| `FILE_TOO_LARGE`        | File exceeds size limit  | 400    |
+| `INVALID_FILE_TYPE`     | File type not allowed    | 400    |
+| `SERVER_ERROR`          | Internal server error    | 500    |
 
 ## Project Structure
 
@@ -426,10 +458,10 @@ GET /api/v1/health
 - ✅ **File upload restrictions** (type, size)
 - ✅ **Auto-expiring tokens** via MongoDB TTL indexes
 
-
 ## Testing with cURL
 
 ### Register a new user
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -442,6 +474,7 @@ curl -X POST http://localhost:3000/api/v1/auth/register \
 ```
 
 ### Login
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
@@ -453,12 +486,14 @@ curl -X POST http://localhost:3000/api/v1/auth/login \
 ```
 
 ### Get users (with token)
+
 ```bash
 curl -X GET http://localhost:3000/api/v1/users \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN_HERE"
 ```
 
 ### Upload file
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/upload \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN_HERE" \
@@ -487,7 +522,6 @@ CORS_ORIGIN=https://your-frontend-domain.com
 5. Get connection string and add to `.env`
 
 ### Deployment Platforms
-
 
 ## Contributing
 

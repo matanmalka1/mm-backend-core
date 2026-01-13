@@ -13,20 +13,23 @@ const startServer = async () => {
       logger.info(`Server is live, listening on port: ${port}`);
     });
   } catch (error) {
-    logger.error('Failed to start server', { error: error.message });
+    logger.error("Failed to start server", { error: error.message });
     process.exit(1);
   }
 };
 
 // Handle uncaught exceptions
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception', { error: error.message, stack: error.stack });
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught Exception", {
+    error: error.message,
+    stack: error.stack,
+  });
   process.exit(1);
 });
 
 // Handle unhandled promise rejections.
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection', { reason, promise });
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("Unhandled Rejection", { reason, promise });
   process.exit(1);
 });
 

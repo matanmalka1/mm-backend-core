@@ -21,7 +21,7 @@ import {
 export const router = express.Router();
 
 router.post("/register", authRateLimiter, validateRegister, register);
-router.post("/login",authRateLimiter, validateLogin, login);
+router.post("/login", authRateLimiter, validateLogin, login);
 router.post("/logout", authenticate, logout);
 router.post("/refresh", authRateLimiter, refresh);
 router.get("/me", authenticate, me);

@@ -4,7 +4,10 @@ import { fileURLToPath } from "url";
 
 import multer from "multer";
 
-import { fileTooLargeError, fileUploadError } from "../utils/error-factories.js";
+import {
+  fileTooLargeError,
+  fileUploadError,
+} from "../utils/error-factories.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,11 +31,13 @@ const storage = multer.diskStorage({
   },
 });
 
+const maxFileSize = +process.env.MAX_FILE_SIZE || 5 * 1024 * 1024;
+
 // Multer middleware with storage and file size limits.
 export const upload = multer({
   storage,
   limits: {
-    fileSize: +process.env.MAX_FILE_SIZE || 5 * 1024 * 1024,
+    fileSize: maxFileSize,
   },
 });
 
@@ -40,7 +45,7 @@ export const upload = multer({
 export const handleMulterError = (err, _req, _res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
-      return next(fileTooLargeError(+process.env.MAX_FILE_SIZE));
+      return next(fileTooLargeError(maxFileSize));
     }
     return next(fileUploadError(err.message));
   }

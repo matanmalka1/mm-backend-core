@@ -33,15 +33,20 @@ const findOrCreateUser = async (profile, provider) => {
     }
 
     const role = await Role.findOne({ name: "user" });
-    if (!role) throw new Error("Default USER role not found. Run database seed.");
+    if (!role)
+      throw new Error("Default USER role not found. Run database seed.");
 
     const firstName =
       profile.name?.givenName || profile.displayName?.split(" ")?.[0] || "User";
     const lastName =
-      profile.name?.familyName || profile.displayName?.split(" ")?.[1] || "User";
+      profile.name?.familyName ||
+      profile.displayName?.split(" ")?.[1] ||
+      "User";
     const newEmail = email || `${provider}-${profile.id}@oauth.local`;
 
-    const hashedPassword = await hashPassword(`oauth-${provider}-${profile.id}`);
+    const hashedPassword = await hashPassword(
+      `oauth-${provider}-${profile.id}`
+    );
     const newUser = await User.create({
       email: newEmail,
       firstName,

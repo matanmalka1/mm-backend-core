@@ -48,7 +48,9 @@ export const validateUpdateProfile = (req, _res, next) => {
     .object(
       {
         street: z
-          .string({ invalid_type_error: "Street must be at least 3 characters" })
+          .string({
+            invalid_type_error: "Street must be at least 3 characters",
+          })
           .trim()
           .min(3, { message: "Street must be at least 3 characters" })
           .optional(),
@@ -63,12 +65,16 @@ export const validateUpdateProfile = (req, _res, next) => {
           .min(2, { message: "State must be at least 2 characters" })
           .optional(),
         zipCode: z
-          .string({ invalid_type_error: "Zip code must be at least 3 characters" })
+          .string({
+            invalid_type_error: "Zip code must be at least 3 characters",
+          })
           .trim()
           .min(3, { message: "Zip code must be at least 3 characters" })
           .optional(),
         country: z
-          .string({ invalid_type_error: "Country must be at least 2 characters" })
+          .string({
+            invalid_type_error: "Country must be at least 2 characters",
+          })
           .trim()
           .min(2, { message: "Country must be at least 2 characters" })
           .optional(),
@@ -84,9 +90,12 @@ export const validateUpdateProfile = (req, _res, next) => {
       phoneNumber: phoneSchema.optional().nullable(),
       bio: z
         .string({
-          invalid_type_error: "Bio must be a string with maximum 500 characters",
+          invalid_type_error:
+            "Bio must be a string with maximum 500 characters",
         })
-        .max(500, { message: "Bio must be a string with maximum 500 characters" })
+        .max(500, {
+          message: "Bio must be a string with maximum 500 characters",
+        })
         .optional()
         .nullable(),
       shippingAddress: shippingAddressSchema.optional().nullable(),

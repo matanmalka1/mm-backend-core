@@ -15,7 +15,9 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
   }
 
   const hasOAuth =
-    user.oauth?.google?.id || user.oauth?.github?.id || user.oauth?.facebook?.id;
+    user.oauth?.google?.id ||
+    user.oauth?.github?.id ||
+    user.oauth?.facebook?.id;
   if (hasOAuth) {
     throw authenticationError(
       "OAuth users cannot change password. Please use your social account login."

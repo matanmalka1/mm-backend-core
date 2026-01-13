@@ -15,14 +15,31 @@ import {
 } from "../validators/userValidate.js";
 
 export const router = express.Router();
-// CREATE 
-router.post("/",authenticate,authorize("admin"),validateCreateUser,createUser);
+// CREATE
+router.post(
+  "/",
+  authenticate,
+  authorize("admin"),
+  validateCreateUser,
+  createUser
+);
 // READ ALL
 router.get("/", authenticate, getAllUsers);
 // READ ONE
 router.get("/:id", authenticate, validateUserIdParam, getUserById);
 // UPDATE
-router.put("/:id", authenticate, validateUserIdParam, validateUpdateUser,updateUser);
+router.put(
+  "/:id",
+  authenticate,
+  validateUserIdParam,
+  validateUpdateUser,
+  updateUser
+);
 // DELETE
-router.delete("/:id",authenticate,authorize("admin"),validateUserIdParam,deleteUser);
-
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("admin"),
+  validateUserIdParam,
+  deleteUser
+);

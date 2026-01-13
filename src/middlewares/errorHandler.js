@@ -1,6 +1,6 @@
-import { ApiError, serverError } from '../utils/error-factories.js';
-import { logger } from '../utils/logger.js';
-import { errorResponse } from '../utils/response.js';
+import { ApiError, serverError } from "../utils/error-factories.js";
+import { logger } from "../utils/logger.js";
+import { errorResponse } from "../utils/response.js";
 
 // Normalize errors and send a consistent JSON response.
 export const errorHandler = (err, req, res, _next) => {
@@ -8,7 +8,7 @@ export const errorHandler = (err, req, res, _next) => {
 
   if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode || 500;
-    const message = error.message || 'Internal server error';
+    const message = error.message || "Internal server error";
     error = serverError(message);
     error.statusCode = statusCode;
     if (err instanceof Error) {
@@ -18,7 +18,7 @@ export const errorHandler = (err, req, res, _next) => {
 
   const { code, message, statusCode, details } = error;
   const stack = error.stack || (err instanceof Error ? err.stack : undefined);
-  const userId = req.user ? (req.user.id || req.user._id) : undefined;
+  const userId = req.user ? req.user.id || req.user._id : undefined;
 
   // Log the error
   const logMessage = {
@@ -28,17 +28,17 @@ export const errorHandler = (err, req, res, _next) => {
     method: req.method,
     path: req.path,
     ip: req.ip,
-    userAgent: req.get('user-agent'),
+    userAgent: req.get("user-agent"),
     userId,
   };
 
   if (statusCode >= 500) {
-    logger.error('Server Error', { ...logMessage, stack });
+    logger.error("Server Error", { ...logMessage, stack });
   } else if (statusCode >= 400) {
-    logger.warn('Client Error', logMessage);
+    logger.warn("Client Error", logMessage);
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     delete error.stack;
   }
 
@@ -47,6 +47,6 @@ export const errorHandler = (err, req, res, _next) => {
     code,
     message,
     statusCode,
-    process.env.NODE_ENV !== 'production' ? details : null
+    process.env.NODE_ENV !== "production" ? details : null
   );
 };

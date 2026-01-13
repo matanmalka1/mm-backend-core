@@ -1,5 +1,7 @@
 import { unlink } from "fs/promises";
 
+import { fileTypeFromFile } from "file-type";
+
 import { buildValidationError } from "./validatorUtils.js";
 
 // Validate that a file was uploaded.
@@ -20,6 +22,22 @@ export const validateUpload = async (req, _res, next) => {
         field: "file",
         message: `File type ${req.file.mimetype} is not allowed`,
       });
+    } else if (req.file.path) {
+      try {
+        const detectedType = await fileTypeFromFile(req.file.path);
+
+        if (!detectedType || detectedType.mime !== req.file.mimetype) {
+          errors.push({
+            field: "file",
+            message: "File content does not match its declared type",
+          });
+        }
+      } catch {
+        errors.push({
+          field: "file",
+          message: "Unable to validate uploaded file content",
+        });
+      }
     }
   }
 

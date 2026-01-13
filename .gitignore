@@ -1,10 +1,9 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Environment variables
-.env.development
-.env.production
+.env*
+!.env.example
 
 # Logs
 logs/

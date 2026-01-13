@@ -37,6 +37,42 @@ const userSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
+    oauth: {
+      google: {
+        id: String,
+        displayName: String,
+      },
+      github: {
+        id: String,
+        displayName: String,
+      },
+      facebook: {
+        id: String,
+        displayName: String,
+      },
+    },
+    phoneNumber: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    profilePicture: {
+      type: String,
+      default: null,
+    },
+    bio: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [300, "Bio cannot exceed 300 characters"],
+    },
+    defaultShippingAddress: {
+      street: String,
+      city: String,
+      state: String,
+      zipCode: String,
+      country: String,
+    },
   },
   {
     timestamps: true,

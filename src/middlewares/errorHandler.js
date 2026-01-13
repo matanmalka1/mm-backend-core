@@ -1,4 +1,4 @@
-import { ApiError, API_ERROR_CODES } from '../constants/api-error-codes.js';
+import { ApiError, serverError } from '../utils/error-factories.js';
 import { errorResponse } from '../utils/response.js';
 import { logger } from '../utils/logger.js';
 
@@ -9,15 +9,16 @@ export const errorHandler = (err, req, res, _next) => {
   if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode || 500;
     const message = error.message || 'Internal server error';
-    error = new ApiError(
-      API_ERROR_CODES.SERVER_ERROR,
-      message,
-      statusCode,
-      err.stack
-    );
+    error = serverError(message);
+    error.statusCode = statusCode;
+    if (err instanceof Error) {
+      error.details = err.stack;
+    }
   }
 
   const { code, message, statusCode, details } = error;
+  const stack = error.stack || (err instanceof Error ? err.stack : undefined);
+  const userId = req.user ? (req.user.id || req.user._id) : undefined;
 
   // Log the error
   const logMessage = {
@@ -28,11 +29,11 @@ export const errorHandler = (err, req, res, _next) => {
     path: req.path,
     ip: req.ip,
     userAgent: req.get('user-agent'),
-    userId: req.user?._id || req.user?.id,
+    userId,
   };
 
   if (statusCode >= 500) {
-    logger.error('Server Error', { ...logMessage, stack: err.stack });
+    logger.error('Server Error', { ...logMessage, stack });
   } else if (statusCode >= 400) {
     logger.warn('Client Error', logMessage);
   }

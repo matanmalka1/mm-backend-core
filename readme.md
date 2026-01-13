@@ -5,6 +5,7 @@ Production-ready REST API built with Express.js and MongoDB/Mongoose.
 ## Features
 
 - **Authentication & Authorization**: JWT-based auth with refresh token rotation
+- **OAuth Providers**: Optional Google/GitHub/Facebook login with Passport
 - **Database**: MongoDB with Mongoose ODM
 - **Security**: Helmet, CORS, rate limiting, input validation
 - **File Upload**: Multer with file type and size validation
@@ -54,7 +55,7 @@ npm run dev
 
 ## Environment Variables
 
-Create a `.env.development` file with these variables:
+Create a `.env.development` file with these variables (start from `.env.example`):
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -74,6 +75,14 @@ Create a `.env.development` file with these variables:
 | `AUTH_RATE_LIMIT_MAX_REQUESTS` | Auth rate limit max requests | `10` |
 | `MAX_FILE_SIZE` | Max upload size (bytes) | `5242880` (5MB) |
 | `ALLOWED_FILE_TYPES` | Allowed MIME types | `image/jpeg,image/png,image/gif,application/pdf` |
+| `API_URL` | Backend base URL for OAuth callbacks | `http://localhost:3000/api/v1` |
+| `FRONTEND_URL` | Frontend base URL for OAuth redirects | `http://localhost:5173` |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | OAuth provider value |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | OAuth provider value |
+| `GITHUB_CLIENT_ID` | GitHub OAuth client ID | OAuth provider value |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | OAuth provider value |
+| `FACEBOOK_CLIENT_ID` | Facebook OAuth client ID | OAuth provider value |
+| `FACEBOOK_CLIENT_SECRET` | Facebook OAuth client secret | OAuth provider value |
 
 ### MongoDB Connection Strings
 
@@ -93,6 +102,7 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/your-database-na
 npm run dev      # Start development server with hot reload
 npm start        # Start production server
 npm run seed     # Seed database with roles, permissions, and test users
+npm run jscpd    # Detect copy/paste duplicates
 ```
 
 ## Default Users (after seeding)
@@ -200,6 +210,38 @@ Authorization: Bearer <access_token>
 POST /api/v1/auth/logout
 Authorization: Bearer <access_token>
 Cookie: refreshToken=...
+```
+
+#### Change Password
+```http
+POST /api/v1/auth/change-password
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "currentPassword": "OldPass123!",
+  "newPassword": "NewPass123!"
+}
+```
+
+#### Update Profile
+```http
+PUT /api/v1/auth/profile
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "phoneNumber": "+1 555 123 4567"
+}
+```
+
+#### OAuth Login
+```http
+GET /api/v1/auth/google
+GET /api/v1/auth/github
+GET /api/v1/auth/facebook
 ```
 
 ### User Endpoints
@@ -364,6 +406,7 @@ GET /api/v1/health
 │   ├── server.js        # Entry point
 │   └── seed.js          # Database seeder
 ├── uploads/             # Uploaded files (gitignored)
+├── .env.example         # Environment variables template
 ├── .env.development     # Environment variables (gitignored)
 ├── .gitignore
 ├── package.json

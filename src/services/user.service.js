@@ -1,28 +1,29 @@
 import { User, Role } from "../models/index.js";
-import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
 import { hashPassword } from "../utils/password.js";
+import {
+  resourceNotFoundError,
+  duplicateResourceError,
+} from "../utils/error-factories.js";
+import {
+  parsePaginationParams,
+  buildPaginationMeta,
+} from "../utils/pagination.js";
 
-// CREATE
-// Create a new user with role validation.
 export const createUser = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });
 
   if (existingUser) {
-    throw new ApiError(
-      API_ERROR_CODES.DUPLICATE_RESOURCE,
-      "User with this email already exists",
-      400
-    );
+    throw duplicateResourceError("User", "email");
+  }
+
+  if (!userData.password) {
+    throw new Error("Password is required for email/password registration");
   }
 
   const role = await Role.findById(userData.roleId);
 
   if (!role) {
-    throw new ApiError(
-      API_ERROR_CODES.RESOURCE_NOT_FOUND,
-      "Role not found",
-      404
-    );
+    throw resourceNotFoundError("Role");
   }
 
   const user = await User.create({
@@ -36,12 +37,11 @@ export const createUser = async (userData) => {
   return user;
 };
 
-// READ ALL (with pagination)
-// Fetch paginated users with role names.
 export const getAllUsers = async (query) => {
-  const page = Math.max(1, parseInt(query.page) || 1);
-  const limit = Math.min(100, Math.max(1, parseInt(query.limit) || 10));
-  const skip = (page - 1) * limit;
+  const { page, limit, skip } = parsePaginationParams(query, {
+    defaultLimit: 10,
+    maxLimit: 100,
+  });
 
   const [users, count] = await Promise.all([
     User.find()
@@ -54,16 +54,11 @@ export const getAllUsers = async (query) => {
   ]);
 
   return {
-    count,
     users,
-    page,
-    limit,
-    totalPages: Math.ceil(count / limit),
+    ...buildPaginationMeta(page, limit, count),
   };
 };
 
-// READ ONE
-// Fetch a single user by id with role and permissions.
 export const getUserById = async (id) => {
   const user = await User.findById(id)
     .populate({
@@ -73,51 +68,37 @@ export const getUserById = async (id) => {
     .lean();
 
   if (!user) {
-    throw new ApiError(
-      API_ERROR_CODES.RESOURCE_NOT_FOUND,
-      `User with id ${id} not found`,
-      404
-    );
+    throw resourceNotFoundError("User", id);
   }
 
   return user;
 };
 
-// UPDATE
-// Update user fields with email and role checks.
 export const updateUser = async (id, userData) => {
   const user = await User.findById(id);
 
   if (!user) {
-    throw new ApiError(
-      API_ERROR_CODES.RESOURCE_NOT_FOUND,
-      "User not found",
-      404
-    );
+    throw resourceNotFoundError("User");
   }
 
   if (userData.email && userData.email !== user.email) {
     const existingUser = await User.findOne({ email: userData.email });
     if (existingUser) {
-      throw new ApiError(
-        API_ERROR_CODES.DUPLICATE_RESOURCE,
-        "User with this email already exists",
-        400
-      );
+      throw duplicateResourceError("User", "email");
     }
   }
 
   if (userData.roleId) {
     const role = await Role.findById(userData.roleId);
     if (!role) {
-      throw new ApiError(
-        API_ERROR_CODES.RESOURCE_NOT_FOUND,
-        "Role not found",
-        404
-      );
+      throw resourceNotFoundError("Role");
     }
     userData.role = userData.roleId;
     delete userData.roleId;
+  }
+
+  if (userData.password) {
+    userData.password = await hashPassword(userData.password);
   }
 
   Object.assign(user, userData);
@@ -126,17 +107,11 @@ export const updateUser = async (id, userData) => {
   return user;
 };
 
-// DELETE
-// Delete a user by id.
 export const deleteUser = async (id) => {
   const user = await User.findById(id);
 
   if (!user) {
-    throw new ApiError(
-      API_ERROR_CODES.RESOURCE_NOT_FOUND,
-      "User not found",
-      404
-    );
+    throw resourceNotFoundError("User");
   }
 
   await user.deleteOne();

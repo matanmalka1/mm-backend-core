@@ -8,7 +8,7 @@ export const globalRateLimiter = rateLimit({
   message: {
     success: false,
     error: {
-      code: API_ERROR_CODES.SERVER_ERROR,
+      code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
       message: "Too many requests, please try again later",
     },
   },
@@ -23,7 +23,7 @@ export const authRateLimiter = rateLimit({
   message: {
     success: false,
     error: {
-      code: API_ERROR_CODES.SERVER_ERROR,
+      code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
       message: "Too many authentication attempts, please try again later",
     },
   },

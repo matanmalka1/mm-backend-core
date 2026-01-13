@@ -1,5 +1,8 @@
 import { verifyAccessToken } from "../utils/jwt.js";
-import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
+import {
+  authenticationError,
+  authorizationError,
+} from "../utils/error-factories.js";
 import { User } from "../models/index.js";
 
 // Authenticate request by validating JWT and loading user with role/permissions.
@@ -8,11 +11,7 @@ export const authenticate = async (req, _res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new ApiError(
-        API_ERROR_CODES.AUTHENTICATION_ERROR,
-        "No token provided",
-        401
-      );
+      throw authenticationError("No token provided");
     }
 
     const token = authHeader.substring(7);
@@ -26,11 +25,7 @@ export const authenticate = async (req, _res, next) => {
       .lean();
 
     if (!user || !user.isActive) {
-      throw new ApiError(
-        API_ERROR_CODES.AUTHENTICATION_ERROR,
-        "User not found or inactive",
-        401
-      );
+      throw authenticationError("User not found or inactive");
     }
 
     req.user = user;
@@ -46,21 +41,13 @@ export const authorize = (...roles) => {
   return async (req, _res, next) => {
     try {
       if (!req.user) {
-        throw new ApiError(
-          API_ERROR_CODES.AUTHORIZATION_ERROR,
-          "User not authenticated",
-          403
-        );
+        throw authorizationError("User not authenticated");
       }
 
       const userRole = req.user.role.name;
 
       if (!roles.includes(userRole)) {
-        throw new ApiError(
-          API_ERROR_CODES.AUTHORIZATION_ERROR,
-          "Insufficient permissions",
-          403
-        );
+        throw authorizationError("Insufficient permissions");
       }
 
       next();
@@ -76,11 +63,7 @@ export const checkPermission = (resource, action) => {
   return async (req, _res, next) => {
     try {
       if (!req.user || !req.user.role) {
-        throw new ApiError(
-          API_ERROR_CODES.AUTHORIZATION_ERROR,
-          "User not authenticated",
-          403
-        );
+        throw authorizationError("User not authenticated");
       }
 
       const hasPermission = req.user.role.permissions.some(
@@ -89,11 +72,7 @@ export const checkPermission = (resource, action) => {
       );
 
       if (!hasPermission) {
-        throw new ApiError(
-          API_ERROR_CODES.AUTHORIZATION_ERROR,
-          `Permission denied: ${action} on ${resource}`,
-          403
-        );
+        throw authorizationError(`Permission denied: ${action} on ${resource}`);
       }
 
       next();

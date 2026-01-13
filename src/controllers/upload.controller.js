@@ -1,15 +1,11 @@
-import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
+import { fileUploadError } from "../utils/error-factories.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { successResponse } from "../utils/response.js";
 
 // Handle single file upload response payload.
 export const uploadFile = asyncHandler(async (req, res) => {
   if (!req.file) {
-    throw new ApiError(
-      API_ERROR_CODES.FILE_UPLOAD_ERROR,
-      "No file uploaded",
-      400
-    );
+    throw fileUploadError("No file uploaded");
   }
 
   const fileInfo = {

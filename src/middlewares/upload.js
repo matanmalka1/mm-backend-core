@@ -2,7 +2,7 @@ import multer from "multer";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { existsSync, mkdirSync } from "fs";
-import { ApiError, API_ERROR_CODES } from "../constants/api-error-codes.js";
+import { fileTooLargeError, fileUploadError } from "../utils/error-factories.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,27 +26,21 @@ const storage = multer.diskStorage({
   },
 });
 
-// Multer middleware with storage only; validation happens in uploadValidate.
+// Multer middleware with storage and file size limits.
 export const upload = multer({
   storage,
+  limits: {
+    fileSize: +process.env.MAX_FILE_SIZE || 5 * 1024 * 1024,
+  },
 });
 
 // Translate multer errors into ApiError responses.
 export const handleMulterError = (err, _req, _res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
-      return next(
-        new ApiError(
-          API_ERROR_CODES.FILE_TOO_LARGE,
-          `File size exceeds maximum allowed size of ${+process.env
-            .MAX_FILE_SIZE} bytes`,
-          400
-        )
-      );
+      return next(fileTooLargeError(+process.env.MAX_FILE_SIZE));
     }
-    return next(
-      new ApiError(API_ERROR_CODES.FILE_UPLOAD_ERROR, err.message, 400)
-    );
+    return next(fileUploadError(err.message));
   }
   next(err);
 };

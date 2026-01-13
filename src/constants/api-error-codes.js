@@ -15,12 +15,3 @@ export const API_ERROR_CODES = {
   DATABASE_ERROR: 'DATABASE_ERROR',
   SERVER_ERROR: 'SERVER_ERROR',
 };
-
-export class ApiError extends Error {
-  constructor(code, message, statusCode = 500, details = null) {
-    super(message);
-    this.code = code;
-    this.statusCode = statusCode;
-    this.details = details;
-  }
-}

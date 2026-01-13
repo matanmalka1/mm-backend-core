@@ -7,7 +7,14 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "jscpd": "jscpd . --ignore \"**/node_modules/**\"",
+    "dev:env": "cross-env NODE_ENV=development nodemon src/server.js",
+    "start:prod": "cross-env NODE_ENV=production node src/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --check",
+    "format:fix": "prettier . --write"
   },
   "keywords": [
     "express",
@@ -25,6 +32,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
@@ -32,9 +40,22 @@
     "mongoose": "^8.0.0",
     "morgan": "^1.10.1",
     "multer": "^1.4.5-lts.1",
-    "winston": "^3.19.0"
+    "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
+    "winston": "^3.19.0",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "prettier": "^3.3.3",
+    "jscpd": "^4.0.5",
     "nodemon": "^3.0.2"
   },
   "engines": {

@@ -63,6 +63,15 @@ describe("Auth flow", () => {
 
     expect(refreshRes.statusCode).toBe(200);
     expect(refreshRes.body.data.accessToken).toBeTruthy();
+    const rotatedCookie = (refreshRes.headers["set-cookie"] || []).find(
+      (cookie) => cookie.startsWith("refreshToken=")
+    );
+    expect(rotatedCookie).toBeTruthy();
+
+    const reuseRes = await request(app)
+      .post("/api/v1/auth/refresh")
+      .set("Cookie", refreshCookie);
+    expect(reuseRes.statusCode).toBe(401);
 
     const logoutRes = await request(app)
       .post("/api/v1/auth/logout")

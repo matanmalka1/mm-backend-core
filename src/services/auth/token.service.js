@@ -30,18 +30,31 @@ export const logout = async (userId, refreshToken) => {
 export const refreshAccessToken = async (oldRefreshToken) => {
   const decoded = verifyRefreshToken(oldRefreshToken);
   const tokenHash = hashRefreshToken(oldRefreshToken);
+  const now = new Date();
 
   const tokenRecord = await RefreshToken.findOneAndUpdate(
     {
       token: tokenHash,
       user: decoded.userId,
       isRevoked: false,
-      expiresAt: { $gt: new Date() },
+      expiresAt: { $gt: now },
     },
-    { isRevoked: true, revokedAt: new Date() }
+    { isRevoked: true, revokedAt: now }
   );
 
   if (!tokenRecord) {
+    const existingToken = await RefreshToken.findOne({
+      token: tokenHash,
+      user: decoded.userId,
+    }).lean();
+
+    if (existingToken?.isRevoked) {
+      await RefreshToken.updateMany(
+        { user: decoded.userId, isRevoked: false },
+        { isRevoked: true, revokedAt: now }
+      );
+    }
+
     throw refreshTokenInvalidError(
       "Invalid or already used/expired refresh token"
     );
@@ -64,6 +77,11 @@ export const refreshAccessToken = async (oldRefreshToken) => {
     user: user._id,
     expiresAt,
   });
+
+  await RefreshToken.updateOne(
+    { _id: tokenRecord._id },
+    { replacedByToken: newTokenHash }
+  );
 
   return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 };

@@ -23,6 +23,9 @@ const refreshTokenSchema = new mongoose.Schema(
     revokedAt: {
       type: Date,
     },
+    replacedByToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

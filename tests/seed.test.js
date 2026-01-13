@@ -30,6 +30,7 @@ vi.mock("../src/models/User.js", () => ({
   User: {
     findOne: vi.fn(async () => null),
     create: vi.fn(async (data) => data),
+    findOneAndUpdate: vi.fn(async (_filter, update) => update),
   },
 }));
 vi.mock("bcrypt", () => ({
@@ -58,7 +59,7 @@ describe("seed script", () => {
     expect(connectDB).toHaveBeenCalled();
     expect(ensurePermissions).toHaveBeenCalled();
     expect(Role.create).toHaveBeenCalled();
-    expect(User.create).toHaveBeenCalled();
+    expect(User.findOneAndUpdate).toHaveBeenCalled();
     expect(disconnectDB).toHaveBeenCalled();
 
     exitSpy.mockRestore();

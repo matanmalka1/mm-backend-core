@@ -114,17 +114,20 @@ const seed = async () => {
   const hashedPassword = await bcrypt.hash("Password123!", 10);
 
   for (const user of usersToSeed) {
-    const existing = await User.findOne({ email: user.email });
-    if (!existing) {
-      await User.create({
-        email: user.email,
-        password: hashedPassword,
-        firstName: user.first,
-        lastName: user.last,
-        role: roleMap[user.role]._id,
-        isActive: true,
-      });
-    }
+    await User.findOneAndUpdate(
+      { email: user.email },
+      {
+        $setOnInsert: {
+          email: user.email,
+          password: hashedPassword,
+          firstName: user.first,
+          lastName: user.last,
+          role: roleMap[user.role]._id,
+          isActive: true,
+        },
+      },
+      { upsert: true, new: true }
+    );
   }
 
   console.log("Users created");

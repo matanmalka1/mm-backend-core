@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 
 import winston from "winston";
 
-import { getRequestContext } from "./request-context.js";
+import { getRequestContext } from "../middlewares/correlationId.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

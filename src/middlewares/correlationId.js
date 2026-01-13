@@ -1,6 +1,10 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import crypto from "node:crypto";
 
-import { runWithRequestContext } from "../utils/request-context.js";
+const requestContext = new AsyncLocalStorage();
+
+export const runWithRequestContext = (context, fn) => requestContext.run(context, fn);
+export const getRequestContext = () => requestContext.getStore() || {};
 
 const headerName = "x-correlation-id";
 

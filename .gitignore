@@ -1,30 +1,8 @@
-# Dependencies
 node_modules/
-
-# Environment variables
-.env*
-!.env.example
-
-# Logs
-logs/
+.DS_Store
 *.log
 npm-debug.log*
-
-# Uploads
-uploads/*
-!uploads/.gitkeep
-
-# Database
-database.sqlite
-*.db
-
-# IDE
+yarn-debug.log*
+yarn-error.log*
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# OS
-Thumbs.db

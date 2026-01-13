@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { uploadFile } from "../../src/controllers/upload.controller.js";
-import { buildTestRes } from "../helpers.js";
+import { buildTestRes } from "../utils/test-response.js";
 
 describe("upload controller", () => {
   it("returns file info", async () => {

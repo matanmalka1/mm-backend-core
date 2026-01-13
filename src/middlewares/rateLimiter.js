@@ -1,4 +1,4 @@
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 
 import { API_ERROR_CODES } from "../constants/api-error-codes.js";
 
@@ -72,6 +72,25 @@ export const oauthRateLimiter = rateLimit({
     error: {
       code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
       message: "Too many OAuth attempts, please try again later",
+    },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limits for password reset requests (per email when available).
+export const forgotPasswordRateLimiter = rateLimit({
+  windowMs: +process.env.FORGOT_PASSWORD_RATE_LIMIT_WINDOW_MS || 60 * 60 * 1000,
+  max: +process.env.FORGOT_PASSWORD_RATE_LIMIT_MAX_REQUESTS || 3,
+  keyGenerator: (req) => {
+    const email = req.body?.email;
+    return email ? String(email).trim().toLowerCase() : ipKeyGenerator(req);
+  },
+  message: {
+    success: false,
+    error: {
+      code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
+      message: "Too many password reset requests, please try again later",
     },
   },
   standardHeaders: true,

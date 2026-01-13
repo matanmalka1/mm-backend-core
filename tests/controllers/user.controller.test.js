@@ -16,7 +16,7 @@ import {
   updateUser,
 } from "../../src/controllers/user.controller.js";
 import * as userService from "../../src/services/user.service.js";
-import { buildTestRes } from "../helpers.js";
+import { buildTestRes } from "../utils/test-response.js";
 
 describe("user controller", () => {
   it("creates user", async () => {

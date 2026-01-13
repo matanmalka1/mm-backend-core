@@ -6,6 +6,8 @@ vi.mock("../../src/services/auth/core.service.js", () => ({
 }));
 vi.mock("../../src/services/auth/password.service.js", () => ({
   changePassword: vi.fn(),
+  requestPasswordReset: vi.fn(),
+  resetPassword: vi.fn(),
 }));
 vi.mock("../../src/services/auth/profile.service.js", () => ({
   updateProfile: vi.fn(),

@@ -66,6 +66,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: [300, "Bio cannot exceed 300 characters"],
     },
+    passwordResetToken: {
+      type: String,
+      select: false,
+    },
+    passwordResetExpires: {
+      type: Date,
+    },
     defaultShippingAddress: {
       street: String,
       city: String,

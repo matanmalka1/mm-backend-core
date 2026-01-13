@@ -2,7 +2,11 @@ import {
   register as registerUser,
   login as loginUser,
 } from "../services/auth/core.service.js";
-import { changePassword as changeUserPassword } from "../services/auth/password.service.js";
+import {
+  changePassword as changeUserPassword,
+  requestPasswordReset,
+  resetPassword as resetUserPassword,
+} from "../services/auth/password.service.js";
 import { updateProfile as updateUserProfile } from "../services/auth/profile.service.js";
 import {
   logout as logoutUser,
@@ -10,6 +14,7 @@ import {
 } from "../services/auth/token.service.js";
 import { buildCookieOptions } from "../utils/cookie-options.js";
 import { refreshTokenInvalidError } from "../utils/error-factories.js";
+import { logger } from "../utils/logger.js";
 import { successResponse } from "../utils/response.js";
 
 const cookieOptions = buildCookieOptions();
@@ -78,4 +83,29 @@ export const changePassword = async (req, res) => {
 export const updateProfile = async (req, res) => {
   const user = await updateUserProfile(req.user._id || req.user.id, req.body);
   successResponse(res, { user }, "Profile updated successfully");
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const token = await requestPasswordReset(email);
+
+  if (token) {
+    const frontendBase = process.env.FRONTEND_URL || "http://localhost:5173";
+    const resetUrl = `${frontendBase}/reset-password?token=${encodeURIComponent(
+      token
+    )}`;
+    logger.info("Password reset email queued", { email, resetUrl });
+  }
+
+  successResponse(
+    res,
+    null,
+    "If an account exists for this email, a reset link has been sent"
+  );
+};
+
+export const resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+  await resetUserPassword(token, password);
+  successResponse(res, null, "Password reset successfully");
 };

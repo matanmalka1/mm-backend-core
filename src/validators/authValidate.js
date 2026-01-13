@@ -104,3 +104,20 @@ export const validateUpdateProfile = (req, _res, next) => {
 
   return runSchema(updateProfileSchema, req.body ?? {}, next);
 };
+
+export const validateForgotPassword = (req, _res, next) => {
+  const forgotPasswordSchema = z.object({
+    email: emailSchema,
+  });
+
+  return runSchema(forgotPasswordSchema, req.body ?? {}, next);
+};
+
+export const validateResetPassword = (req, _res, next) => {
+  const resetPasswordSchema = z.object({
+    token: z.string().min(1, { message: "Reset token is required" }),
+    password: passwordSchema("New password"),
+  });
+
+  return runSchema(resetPasswordSchema, req.body ?? {}, next);
+};

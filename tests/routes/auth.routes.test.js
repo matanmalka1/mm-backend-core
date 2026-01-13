@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("../../src/controllers/auth.controller.js", () => ({
   register: (_req, res) => res.status(200).json({ ok: "register" }),
   login: (_req, res) => res.status(200).json({ ok: "login" }),
+  forgotPassword: (_req, res) => res.status(200).json({ ok: "forgot" }),
+  resetPassword: (_req, res) => res.status(200).json({ ok: "reset" }),
   logout: (_req, res) => res.status(200).json({ ok: "logout" }),
   refresh: (_req, res) => res.status(200).json({ ok: "refresh" }),
   me: (_req, res) => res.status(200).json({ ok: "me" }),
@@ -17,12 +19,16 @@ vi.mock("../../src/middlewares/auth.middleware.js", () => ({
 vi.mock("../../src/middlewares/rateLimiter.js", () => ({
   authRateLimiter: (_req, _res, next) => next(),
   passwordChangeRateLimiter: (_req, _res, next) => next(),
+  refreshRateLimiter: (_req, _res, next) => next(),
+  forgotPasswordRateLimiter: (_req, _res, next) => next(),
 }));
 vi.mock("../../src/validators/authValidate.js", () => ({
   validateRegister: (_req, _res, next) => next(),
   validateLogin: (_req, _res, next) => next(),
   validateChangePassword: (_req, _res, next) => next(),
   validateUpdateProfile: (_req, _res, next) => next(),
+  validateForgotPassword: (_req, _res, next) => next(),
+  validateResetPassword: (_req, _res, next) => next(),
 }));
 
 import { router } from "../../src/routes/auth.routes.js";

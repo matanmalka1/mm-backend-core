@@ -22,6 +22,7 @@ import { requestLogger } from "./middlewares/requestLogger.js";
 import { requestSanitizer } from "./middlewares/requestSanitizer.js";
 import { requestTimeout } from "./middlewares/requestTimeout.js";
 import { router } from "./routes/index.js";
+import { logger } from "./utils/logger.js";
 
 export const app = express();
 

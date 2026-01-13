@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { errorResponse, successResponse } from "../../src/utils/response.js";
-import { buildTestRes } from "../helpers.js";
+
+import { buildTestRes } from "./test-response.js";
 
 describe("response utils", () => {
   it("builds success response", () => {

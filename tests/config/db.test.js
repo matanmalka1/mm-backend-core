@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
 import { describe, expect, it, vi } from "vitest";
+
+import { connectDB, disconnectDB } from "../../src/config/db.js";
 
 vi.mock("mongoose", () => {
   const connection = {
@@ -13,10 +16,6 @@ vi.mock("mongoose", () => {
     },
   };
 });
-
-import mongoose from "mongoose";
-
-import { connectDB, disconnectDB } from "../../src/config/db.js";
 
 describe("db config", () => {
   it("connects to mongoose", async () => {

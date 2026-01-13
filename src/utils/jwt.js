@@ -28,7 +28,9 @@ export const generateRefreshToken = (payload) => {
 
 export const verifyAccessToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    return jwt.verify(token, process.env.JWT_ACCESS_SECRET, {
+      algorithms: ["HS256"],
+    });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       throw tokenExpiredError("Access token expired");
@@ -39,7 +41,9 @@ export const verifyAccessToken = (token) => {
 
 export const verifyRefreshToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    return jwt.verify(token, process.env.JWT_REFRESH_SECRET, {
+      algorithms: ["HS256"],
+    });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       throw refreshTokenExpiredError("Refresh token expired");

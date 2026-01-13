@@ -1,26 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import { errorResponse, successResponse } from "../../src/utils/response.js";
-
-const createRes = () => {
-  const res = {
-    statusCode: 200,
-    payload: null,
-    status(code) {
-      this.statusCode = code;
-      return this;
-    },
-    json(body) {
-      this.payload = body;
-      return this;
-    },
-  };
-  return res;
-};
+import { buildTestRes } from "../helpers.js";
 
 describe("response utils", () => {
   it("builds success response", () => {
-    const res = createRes();
+    const res = buildTestRes();
     successResponse(res, { ok: true }, "done", 201);
 
     expect(res.statusCode).toBe(201);
@@ -29,7 +14,7 @@ describe("response utils", () => {
   });
 
   it("builds error response", () => {
-    const res = createRes();
+    const res = buildTestRes();
     errorResponse(res, "ERROR", "Bad", 400, { fields: [] });
 
     expect(res.statusCode).toBe(400);

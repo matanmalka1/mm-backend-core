@@ -1,22 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { uploadFile } from "../../src/controllers/upload.controller.js";
-
-const buildRes = () => {
-  const res = {
-    statusCode: 200,
-    payload: null,
-    status(code) {
-      this.statusCode = code;
-      return this;
-    },
-    json(body) {
-      this.payload = body;
-      return this;
-    },
-  };
-  return res;
-};
+import { buildTestRes } from "../helpers.js";
 
 describe("upload controller", () => {
   it("returns file info", async () => {
@@ -28,7 +13,7 @@ describe("upload controller", () => {
         size: 10,
       },
     };
-    const res = buildRes();
+    const res = buildTestRes();
 
     await uploadFile(req, res);
 

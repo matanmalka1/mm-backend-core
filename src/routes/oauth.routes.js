@@ -3,11 +3,14 @@ import crypto from "node:crypto";
 import express from "express";
 import passport from "passport";
 
+import { oauthRateLimiter } from "../middlewares/rateLimiter.js";
 import { handleOAuthLogin } from "../services/auth/core.service.js";
 import { buildCookieOptions } from "../utils/cookie-options.js";
 import { logger } from "../utils/logger.js";
 
 export const router = express.Router();
+
+router.use(oauthRateLimiter);
 
 const OAUTH_STATE_COOKIE = "oauthState";
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;

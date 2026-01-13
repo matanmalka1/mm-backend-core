@@ -16,28 +16,13 @@ import {
   updateUser,
 } from "../../src/controllers/user.controller.js";
 import * as userService from "../../src/services/user.service.js";
-
-const buildRes = () => {
-  const res = {
-    statusCode: 200,
-    payload: null,
-    status(code) {
-      this.statusCode = code;
-      return this;
-    },
-    json(body) {
-      this.payload = body;
-      return this;
-    },
-  };
-  return res;
-};
+import { buildTestRes } from "../helpers.js";
 
 describe("user controller", () => {
   it("creates user", async () => {
     userService.createUser.mockResolvedValue({ id: "1" });
     const req = { body: { email: "a@b.com" } };
-    const res = buildRes();
+    const res = buildTestRes();
 
     await createUser(req, res);
 
@@ -48,7 +33,7 @@ describe("user controller", () => {
   it("gets all users", async () => {
     userService.getAllUsers.mockResolvedValue({ users: [] });
     const req = { query: {} };
-    const res = buildRes();
+    const res = buildTestRes();
 
     await getAllUsers(req, res);
 
@@ -58,7 +43,7 @@ describe("user controller", () => {
   it("gets user by id", async () => {
     userService.getUserById.mockResolvedValue({ id: "1" });
     const req = { params: { id: "1" } };
-    const res = buildRes();
+    const res = buildTestRes();
 
     await getUserById(req, res);
 
@@ -68,7 +53,7 @@ describe("user controller", () => {
   it("updates user", async () => {
     userService.updateUser.mockResolvedValue({ id: "1", firstName: "New" });
     const req = { params: { id: "1" }, body: { firstName: "New" } };
-    const res = buildRes();
+    const res = buildTestRes();
 
     await updateUser(req, res);
 
@@ -78,7 +63,7 @@ describe("user controller", () => {
   it("deletes user", async () => {
     userService.deleteUser.mockResolvedValue();
     const req = { params: { id: "1" } };
-    const res = buildRes();
+    const res = buildTestRes();
 
     await deleteUser(req, res);
 

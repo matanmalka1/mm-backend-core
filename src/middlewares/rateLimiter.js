@@ -33,6 +33,21 @@ export const authRateLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
+// Apply rate limits for refresh token exchanges.
+export const refreshRateLimiter = rateLimit({
+  windowMs: +process.env.REFRESH_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000,
+  max: +process.env.REFRESH_RATE_LIMIT_MAX_REQUESTS || 10,
+  message: {
+    success: false,
+    error: {
+      code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
+      message: "Too many refresh attempts, please try again later",
+    },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Apply dedicated rate limits for password change attempts.
 export const passwordChangeRateLimiter = rateLimit({
   windowMs: +process.env.PASSWORD_CHANGE_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000,
@@ -42,6 +57,21 @@ export const passwordChangeRateLimiter = rateLimit({
     error: {
       code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
       message: "Too many password change attempts, please try again later",
+    },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limits for OAuth start/callback endpoints.
+export const oauthRateLimiter = rateLimit({
+  windowMs: +process.env.OAUTH_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000,
+  max: +process.env.OAUTH_RATE_LIMIT_MAX_REQUESTS || 20,
+  message: {
+    success: false,
+    error: {
+      code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
+      message: "Too many OAuth attempts, please try again later",
     },
   },
   standardHeaders: true,

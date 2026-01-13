@@ -1,4 +1,6 @@
-import { User, Role, RefreshToken } from "../../models/index.js";
+import { RefreshToken } from "../../models/RefreshToken.js";
+import { Role } from "../../models/Role.js";
+import { User } from "../../models/User.js";
 import {
   hashRefreshToken,
   getRefreshTokenExpiration,

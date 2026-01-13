@@ -2,7 +2,7 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import { app } from "../src/app.js";
-import { User } from "../src/models/index.js";
+import { User } from "../src/models/User.js";
 
 import { createUser, loginAndGetTokens } from "./helpers.js";
 

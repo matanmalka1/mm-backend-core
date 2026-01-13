@@ -2,7 +2,9 @@ import "./config/env.js";
 import bcrypt from "bcrypt";
 
 import { connectDB, disconnectDB } from "./config/db.js";
-import { User, Role, Permission } from "./models/index.js";
+import { Permission } from "./models/Permission.js";
+import { Role } from "./models/Role.js";
+import { User } from "./models/User.js";
 
 // Seed database with roles, permissions, and default users.
 const seed = async () => {

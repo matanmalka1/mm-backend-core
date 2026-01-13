@@ -1,4 +1,5 @@
-import { RefreshToken, User } from "../../models/index.js";
+import { RefreshToken } from "../../models/RefreshToken.js";
+import { User } from "../../models/User.js";
 import {
   hashRefreshToken,
   getRefreshTokenExpiration,

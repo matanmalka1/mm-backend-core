@@ -37,7 +37,11 @@ describe("Upload API", () => {
     expect(res.statusCode).toBe(201);
     expect(res.body.data.file.filename).toBeTruthy();
 
-    const uploadedPath = res.body.data.file.path;
+    const uploadedPath = path.join(
+      process.cwd(),
+      "uploads",
+      res.body.data.file.filename
+    );
     await fs.unlink(uploadedPath);
   });
 });

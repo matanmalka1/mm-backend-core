@@ -2,7 +2,9 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { beforeAll, afterAll, beforeEach } from "vitest";
 
-import { RefreshToken, Role, User } from "../src/models/index.js";
+import { RefreshToken } from "../src/models/RefreshToken.js";
+import { Role } from "../src/models/Role.js";
+import { User } from "../src/models/User.js";
 
 let mongoServer;
 

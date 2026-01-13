@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-import { User } from "../models/index.js";
+import { User } from "../models/User.js";
 
 import { verifyAccessToken } from "./jwt.js";
 

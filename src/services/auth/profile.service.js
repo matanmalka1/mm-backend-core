@@ -1,4 +1,4 @@
-import { User } from "../../models/index.js";
+import { User } from "../../models/User.js";
 import { sanitizeUser } from "../../utils/auth-helpers.js";
 import { resourceNotFoundError } from "../../utils/error-factories.js";
 import { logger } from "../../utils/logger.js";

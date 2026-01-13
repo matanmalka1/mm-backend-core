@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { app } from "../src/app.js";
-import { User } from "../src/models/index.js";
+import { User } from "../src/models/User.js";
 import { hashPassword } from "../src/utils/password.js";
 
 export const createUser = async ({

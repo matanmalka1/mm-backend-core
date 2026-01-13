@@ -1,8 +1,8 @@
+import { getUserFromToken } from "../utils/auth-helpers.js";
 import {
   authenticationError,
   authorizationError,
 } from "../utils/error-factories.js";
-import { getUserFromToken } from "../utils/auth-helpers.js";
 
 // Authenticate request by validating JWT and loading user with role/permissions.
 export const authenticate = async (req, _res, next) => {

@@ -90,8 +90,7 @@ export const forgotPassword = async (req, res) => {
   const token = await requestPasswordReset(email);
 
   if (token) {
-    const frontendBase = process.env.FRONTEND_URL || "http://localhost:5173";
-    const resetUrl = `${frontendBase}/reset-password?token=${encodeURIComponent(
+    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${encodeURIComponent(
       token
     )}`;
     logger.info("Password reset email queued", { email, resetUrl });

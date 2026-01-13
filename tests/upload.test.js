@@ -17,11 +17,11 @@ const fixturePath = path.join(
 
 describe("Upload API", () => {
   it("uploads a file", async () => {
-    const { userRoleId } = globalThis.__roles;
+    const { adminRoleId } = globalThis.__roles;
     await createUser({
       email: "upload@example.com",
       password: "Password123!",
-      roleId: userRoleId,
+      roleId: adminRoleId,
     });
 
     const { accessToken } = await loginAndGetTokens(

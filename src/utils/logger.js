@@ -1,9 +1,7 @@
 import { existsSync, mkdirSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-
 import winston from "winston";
-
 import { getRequestContext } from "../middlewares/correlationId.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -34,8 +32,7 @@ const redactValue = (value, seen) => {
   }
 
   return Object.keys(value).reduce((acc, key) => {
-    const normalizedKey = key.toLowerCase();
-    if (REDACT_KEYS.has(key) || REDACT_KEYS.has(normalizedKey)) {
+    if (REDACT_KEYS.has(key) || REDACT_KEYS.has(key.toLowerCase())) {
       acc[key] = "[REDACTED]";
     } else {
       acc[key] = redactValue(value[key], seen);

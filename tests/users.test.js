@@ -7,9 +7,14 @@ import { createUser, loginAndGetTokens } from "./helpers.js";
 
 describe("Users API", () => {
   it("lists users for an authenticated user", async () => {
-    const { userRoleId } = globalThis.__roles;
+    const { adminRoleId, userRoleId } = globalThis.__roles;
     await createUser({
       email: "list@example.com",
+      password: "Password123!",
+      roleId: adminRoleId,
+    });
+    await createUser({
+      email: "list-target@example.com",
       password: "Password123!",
       roleId: userRoleId,
     });
@@ -73,15 +78,21 @@ describe("Users API", () => {
   });
 
   it("gets a user by id", async () => {
-    const { userRoleId } = globalThis.__roles;
+    const { adminRoleId, userRoleId } = globalThis.__roles;
     const user = await createUser({
       email: "single@example.com",
       password: "Password123!",
       roleId: userRoleId,
     });
 
+    await createUser({
+      email: "admin@example.com",
+      password: "Password123!",
+      roleId: adminRoleId,
+    });
+
     const { accessToken } = await loginAndGetTokens(
-      "single@example.com",
+      "admin@example.com",
       "Password123!"
     );
 

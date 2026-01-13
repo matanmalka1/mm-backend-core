@@ -7,6 +7,7 @@ vi.mock("../../src/controllers/upload.controller.js", () => ({
 }));
 vi.mock("../../src/middlewares/auth.middleware.js", () => ({
   authenticate: (_req, _res, next) => next(),
+  checkPermission: () => (_req, _res, next) => next(),
 }));
 vi.mock("../../src/middlewares/upload.js", () => ({
   upload: { single: () => (_req, _res, next) => next() },

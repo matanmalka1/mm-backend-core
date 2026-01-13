@@ -54,8 +54,10 @@ beforeAll(async () => {
     (await Role.create({ name: "user", description: "user role" }));
 
   const requiredPermissions = [
+    { name: "users.read", resource: "users", action: "read" },
     { name: "users.update", resource: "users", action: "update" },
     { name: "users.delete", resource: "users", action: "delete" },
+    { name: "upload.create", resource: "upload", action: "create" },
   ];
   const permissionMap = await ensurePermissions(requiredPermissions);
   const permissionIds = Object.values(permissionMap).map((perm) => perm._id);

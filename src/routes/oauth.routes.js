@@ -9,14 +9,16 @@ import { buildCookieOptions } from "../utils/cookie-options.js";
 import { logger } from "../utils/logger.js";
 
 export const router = express.Router();
-
 router.use(oauthRateLimiter);
 
+const DEFAULT_FRONTEND_URL = "http://localhost:5173";
 const OAUTH_STATE_COOKIE = "oauthState";
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 
+
+
 const getFrontendBase = () =>
-  process.env.FRONTEND_URL || "http://localhost:5173";
+  process.env.FRONTEND_URL || DEFAULT_FRONTEND_URL;
 
 const oauthStateCookieOptions = buildCookieOptions({
   maxAge: OAUTH_STATE_TTL_MS,
@@ -75,8 +77,8 @@ const handleOAuthCallback = async (req, res) => {
     logger.error("OAuth callback error:", error.message);
     res.redirect(
       `${
-      process.env.FRONTEND_URL || "http://localhost:5173"
-    }/login?error=server_error`
+        process.env.FRONTEND_URL || DEFAULT_FRONTEND_URL
+      }/login?error=server_error`
     );
   }
 };

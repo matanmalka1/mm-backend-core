@@ -8,15 +8,14 @@ import { ensureDefaultUserRole } from "../../utils/role-utils.js";
 const normalizeUrl = (value) => value.replace(/\/+$/, "");
 
 const buildApiBaseUrl = () => {
-  const rawApiUrl = process.env.API_URL;
   const apiPrefix = process.env.API_PREFIX || "/api/v1";
   const normalizedPrefix = apiPrefix.startsWith("/") ? apiPrefix : `/${apiPrefix}`;
 
-  if (!rawApiUrl) {
+  if (!process.env.API_URL) {
     return `http://localhost:3000${normalizedPrefix}`;
   }
 
-  const normalizedApiUrl = normalizeUrl(rawApiUrl);
+  const normalizedApiUrl = normalizeUrl(process.env.API_URL);
   if (normalizedApiUrl.endsWith(normalizedPrefix)) {
     return normalizedApiUrl;
   }
@@ -29,9 +28,7 @@ const oauthCallbackUrl = (providerKey) =>
 
 const getDisplayName = (profile) => {
   if (profile?.displayName) return profile.displayName;
-  const firstName = profile?.name?.givenName;
-  const lastName = profile?.name?.familyName;
-  const combinedName = [firstName, lastName].filter(Boolean).join(" ");
+  const combinedName = [profile?.name?.givenName, profile?.name?.familyName].filter(Boolean).join(" ");
   return combinedName || profile?.username || "User";
 };
 

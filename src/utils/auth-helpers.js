@@ -14,7 +14,9 @@ export const getRefreshTokenExpiration = () => {
 };
 
 export const sanitizeUser = (user) => {
-  const userObject = user.toObject();
+  if (!user) return user;
+  const userObject =
+    typeof user.toObject === "function" ? user.toObject() : { ...user };
   delete userObject.password;
   return userObject;
 };

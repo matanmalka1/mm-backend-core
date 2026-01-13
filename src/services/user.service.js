@@ -9,6 +9,7 @@ import {
   buildPaginationMeta,
 } from "../utils/pagination.js";
 import { hashPassword } from "../utils/password.js";
+import { sanitizeUser } from "../utils/auth-helpers.js";
 
 export const createUser = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });
@@ -35,7 +36,7 @@ export const createUser = async (userData) => {
     role: userData.roleId,
   });
 
-  return user;
+  return sanitizeUser(user);
 };
 
 export const getAllUsers = async (query) => {
@@ -105,7 +106,7 @@ export const updateUser = async (id, userData) => {
   Object.assign(user, userData);
   await user.save();
 
-  return user;
+  return sanitizeUser(user);
 };
 
 export const deleteUser = async (id) => {

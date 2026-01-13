@@ -5,7 +5,10 @@ import {
   getRefreshTokenExpiration,
   sanitizeUser,
 } from "../../utils/auth-helpers.js";
-import { invalidCredentialsError } from "../../utils/error-factories.js";
+import {
+  duplicateResourceError,
+  invalidCredentialsError,
+} from "../../utils/error-factories.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
 import { logger } from "../../utils/logger.js";
 import { comparePassword, hashPassword } from "../../utils/password.js";
@@ -17,7 +20,7 @@ export const register = async (userData) => {
     logger.warn("Registration failed - duplicate email", {
       email: userData.email,
     });
-    return { created: false };
+    throw duplicateResourceError("User", "email");
   }
 
   const defaultRole = await ensureDefaultUserRole();

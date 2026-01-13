@@ -4,7 +4,10 @@ import { logger } from "../utils/logger.js";
 
 export const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      maxPoolSize: +process.env.MONGO_MAX_POOL_SIZE || 20,
+      minPoolSize: +process.env.MONGO_MIN_POOL_SIZE || 2,
+    });
     logger.info(`MongoDB Connected: ${conn.connection.host}`);
 
     // Log MongoDB connection errors.

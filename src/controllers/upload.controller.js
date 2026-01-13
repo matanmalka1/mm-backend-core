@@ -13,7 +13,7 @@ export const uploadFile = asyncHandler(async (req, res) => {
     originalname: req.file.originalname,
     mimetype: req.file.mimetype,
     size: req.file.size,
-    path: req.file.path,
+    path: `/uploads/${req.file.filename}`,
   };
 
   successResponse(res, { file: fileInfo }, "File uploaded successfully", 201);

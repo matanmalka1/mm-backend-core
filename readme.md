@@ -77,6 +77,7 @@ Create a `.env.development` file with these variables (start from `.env.example`
 | `RATE_LIMIT_MAX_REQUESTS`      | Global rate limit max requests          | `100`                                            |
 | `AUTH_RATE_LIMIT_WINDOW_MS`    | Auth rate limit window                  | `900000`                                         |
 | `AUTH_RATE_LIMIT_MAX_REQUESTS` | Auth rate limit max requests            | `10`                                             |
+| `BODY_LIMIT`                   | JSON/form body size limit               | `1mb`                                            |
 | `MAX_FILE_SIZE`                | Max upload size (bytes)                 | `5242880` (5MB)                                  |
 | `ALLOWED_FILE_TYPES`           | Allowed MIME types                      | `image/jpeg,image/png,image/gif,application/pdf` |
 | `API_URL`                      | Backend base URL for OAuth callbacks    | `http://localhost:3000/api/v1`                   |

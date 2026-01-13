@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { Role } from "../../src/models/Role.js";
 import { User } from "../../src/models/User.js";
-import { comparePassword } from "../../src/utils/password.js";
 import {
   createUser,
   deleteUser,
@@ -10,8 +9,8 @@ import {
   getUserById,
   updateUser,
 } from "../../src/services/user.service.js";
+import { comparePassword , hashPassword } from "../../src/utils/password.js";
 
-import { hashPassword } from "../../src/utils/password.js";
 
 describe("user service", () => {
   it("creates a user and sanitizes password", async () => {

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { Role } from "../../src/models/Role.js";
 import { User } from "../../src/models/User.js";
-
 import { hashPassword } from "../../src/utils/password.js";
 
 describe("User model", () => {

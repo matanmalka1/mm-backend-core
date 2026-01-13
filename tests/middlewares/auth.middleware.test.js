@@ -4,12 +4,12 @@ vi.mock("../../src/utils/auth-helpers.js", () => ({
   getUserFromToken: vi.fn(),
 }));
 
-import { getUserFromToken } from "../../src/utils/auth-helpers.js";
 import {
   authenticate,
   authorize,
   checkPermission,
 } from "../../src/middlewares/auth.middleware.js";
+import { getUserFromToken } from "../../src/utils/auth-helpers.js";
 
 describe("auth middleware", () => {
   it("rejects when no bearer token", async () => {

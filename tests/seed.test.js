@@ -37,9 +37,9 @@ vi.mock("bcrypt", () => ({
 }));
 
 import { connectDB, disconnectDB } from "../src/config/db.js";
-import { ensurePermissions } from "../src/utils/permission-utils.js";
 import { Role } from "../src/models/Role.js";
 import { User } from "../src/models/User.js";
+import { ensurePermissions } from "../src/utils/permission-utils.js";
 
 
 describe("seed script", () => {

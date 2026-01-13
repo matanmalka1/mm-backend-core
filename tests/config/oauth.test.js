@@ -19,8 +19,8 @@ vi.mock("../../src/models/User.js", () => ({
   },
 }));
 
-import { User } from "../../src/models/User.js";
 import { configureFacebookStrategy, configureGitHubStrategy, configureGoogleStrategy } from "../../src/config/oauth.js";
+import { User } from "../../src/models/User.js";
 
 
 describe("oauth config", () => {

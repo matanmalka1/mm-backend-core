@@ -8,7 +8,6 @@ import {
   sanitizeUser,
 } from "../../src/utils/auth-helpers.js";
 import { generateAccessToken } from "../../src/utils/jwt.js";
-
 import { createUser } from "../helpers.js";
 
 describe("auth-helpers", () => {

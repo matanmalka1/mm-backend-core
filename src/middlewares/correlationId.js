@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+import { runWithRequestContext } from "../utils/request-context.js";
+
 const headerName = "x-correlation-id";
 
 export const correlationId = (req, res, next) => {
@@ -12,5 +14,5 @@ export const correlationId = (req, res, next) => {
   res.locals.correlationId = value;
   res.setHeader(headerName, value);
 
-  next();
+  runWithRequestContext({ correlationId: value }, next);
 };

@@ -1,5 +1,6 @@
 import { Role } from "../models/Role.js";
 import { User } from "../models/User.js";
+import { sanitizeUser } from "../utils/auth-helpers.js";
 import {
   resourceNotFoundError,
   duplicateResourceError,
@@ -9,7 +10,6 @@ import {
   buildPaginationMeta,
 } from "../utils/pagination.js";
 import { hashPassword } from "../utils/password.js";
-import { sanitizeUser } from "../utils/auth-helpers.js";
 
 export const createUser = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });

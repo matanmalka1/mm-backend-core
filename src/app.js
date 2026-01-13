@@ -25,6 +25,7 @@ import { router } from "./routes/index.js";
 
 export const app = express();
 
+app.use(correlationId);
 app.use(helmet());
 
 const corsOrigins = (process.env.CORS_ORIGIN || "")
@@ -49,8 +50,6 @@ configureGoogleStrategy();
 configureGitHubStrategy();
 configureFacebookStrategy();
 app.use(passport.initialize());
-app.use(correlationId);
-
 app.use(requestLogger);
 
 app.use(globalRateLimiter);

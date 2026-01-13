@@ -9,7 +9,6 @@ import {
 import { refreshAccessToken, logout } from "../../src/services/auth/token.service.js";
 import { hashRefreshToken } from "../../src/utils/auth-helpers.js";
 import { hashPassword } from "../../src/utils/password.js";
-
 import { createUser } from "../helpers.js";
 
 describe("auth services", () => {

@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 
 import winston from "winston";
 
+import { getRequestContext } from "./request-context.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -48,6 +50,14 @@ const redactFormat = winston.format((info) => {
   return redacted;
 });
 
+const requestContextFormat = winston.format((info) => {
+  const { correlationId } = getRequestContext();
+  if (correlationId && !info.correlationId) {
+    info.correlationId = correlationId;
+  }
+  return info;
+});
+
 // Ensure logs directory exists
 const logsDir = path.join(path.dirname(__dirname), "..", "logs");
 if (!existsSync(logsDir)) {
@@ -56,6 +66,7 @@ if (!existsSync(logsDir)) {
 
 // Custom format for file output
 const fileFormat = winston.format.combine(
+  requestContextFormat(),
   redactFormat(),
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.errors({ stack: true }),
@@ -64,6 +75,7 @@ const fileFormat = winston.format.combine(
 
 // Custom format for console output
 const consoleFormat = winston.format.combine(
+  requestContextFormat(),
   redactFormat(),
   winston.format.colorize(),
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),

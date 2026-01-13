@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { User } from "../../src/models/User.js";
 import { changePassword } from "../../src/services/auth/password.service.js";
 import { hashPassword } from "../../src/utils/password.js";
-
 import { createUser } from "../helpers.js";
 
 describe("password service", () => {

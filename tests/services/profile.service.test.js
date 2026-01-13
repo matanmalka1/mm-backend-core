@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { updateProfile } from "../../src/services/auth/profile.service.js";
 import { User } from "../../src/models/User.js";
+import { updateProfile } from "../../src/services/auth/profile.service.js";
 import { hashPassword } from "../../src/utils/password.js";
-
 import { createUser } from "../helpers.js";
 
 describe("profile service", () => {

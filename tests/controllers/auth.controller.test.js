@@ -25,9 +25,9 @@ import {
   updateProfile,
 } from "../../src/controllers/auth.controller.js";
 import * as coreService from "../../src/services/auth/core.service.js";
-import * as tokenService from "../../src/services/auth/token.service.js";
 import * as passwordService from "../../src/services/auth/password.service.js";
 import * as profileService from "../../src/services/auth/profile.service.js";
+import * as tokenService from "../../src/services/auth/token.service.js";
 
 const buildRes = () => {
   const res = {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { User } from "../../src/models/User.js";
 import { findOrCreateUser } from "../../src/config/oauth/oauth-utils.js";
+import { User } from "../../src/models/User.js";
 import { hashPassword } from "../../src/utils/password.js";
 import { ensureDefaultUserRole } from "../../src/utils/role-utils.js";
 

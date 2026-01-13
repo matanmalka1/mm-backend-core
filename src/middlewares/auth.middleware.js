@@ -1,9 +1,8 @@
-import { User } from "../models/User.js";
 import {
   authenticationError,
   authorizationError,
 } from "../utils/error-factories.js";
-import { verifyAccessToken } from "../utils/jwt.js";
+import { getUserFromToken } from "../utils/auth-helpers.js";
 
 // Authenticate request by validating JWT and loading user with role/permissions.
 export const authenticate = async (req, _res, next) => {
@@ -14,18 +13,11 @@ export const authenticate = async (req, _res, next) => {
       throw authenticationError("No token provided");
     }
 
-    const token = authHeader.substring(7);
-    const decoded = verifyAccessToken(token);
-
-    const user = await User.findById(decoded.userId)
-      .populate({
-        path: "role",
-        populate: { path: "permissions" },
-      })
-      .lean();
-
-    if (!user || !user.isActive) {
-      throw authenticationError("User not found or inactive");
+    const user = await getUserFromToken(authHeader, {
+      includePermissions: true,
+    });
+    if (!user) {
+      throw authenticationError("Invalid token");
     }
 
     req.user = user;

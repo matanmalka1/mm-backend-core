@@ -29,9 +29,21 @@ router.post(
   createUser
 );
 // READ ALL
-router.get("/", authenticate, validateUserListQuery, getAllUsers);
+router.get(
+  "/",
+  authenticate,
+  checkPermission("users", "read"),
+  validateUserListQuery,
+  getAllUsers
+);
 // READ ONE
-router.get("/:id", authenticate, validateUserIdParam, getUserById);
+router.get(
+  "/:id",
+  authenticate,
+  checkPermission("users", "read"),
+  validateUserIdParam,
+  getUserById
+);
 // UPDATE
 router.put(
   "/:id",

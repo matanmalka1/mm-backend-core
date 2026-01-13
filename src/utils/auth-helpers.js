@@ -3,13 +3,14 @@ import crypto from "node:crypto";
 import { User } from "../models/User.js";
 
 import { verifyAccessToken } from "./jwt.js";
+import { getRefreshTokenTtlMs } from "./duration.js";
 
 export const hashRefreshToken = (token) =>
   crypto.createHash("sha256").update(token).digest("hex");
 
 export const getRefreshTokenExpiration = () => {
   const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 7);
+  expiresAt.setTime(expiresAt.getTime() + getRefreshTokenTtlMs());
   return expiresAt;
 };
 

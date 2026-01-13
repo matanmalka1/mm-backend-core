@@ -93,8 +93,8 @@ export const validateUpdateProfile = (req, _res, next) => {
           invalid_type_error:
             "Bio must be a string with maximum 500 characters",
         })
-        .max(500, {
-          message: "Bio must be a string with maximum 500 characters",
+        .max(300, {
+          message: "Bio must be a string with maximum 300 characters",
         })
         .optional()
         .nullable(),

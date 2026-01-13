@@ -81,7 +81,7 @@ export const validateUpdateProfile = (req, _res, next) => {
       },
       { invalid_type_error: "Shipping address must be an object" }
     )
-    .passthrough();
+    .loose();
 
   const updateProfileSchema = z
     .object({
@@ -100,7 +100,7 @@ export const validateUpdateProfile = (req, _res, next) => {
         .nullable(),
       shippingAddress: shippingAddressSchema.optional().nullable(),
     })
-    .passthrough();
+    .loose();
 
   return runSchema(updateProfileSchema, req.body ?? {}, next);
 };

@@ -78,7 +78,7 @@ export const validateUserListQuery = (req, _res, next) => {
       page: numberParam("page", 1000000),
       limit: numberParam("limit", maxLimit),
     })
-    .passthrough();
+    .loose();
 
   return runSchema(listQuerySchema, req.query ?? {}, next);
 };

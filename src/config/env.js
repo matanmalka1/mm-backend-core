@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import dotenv from "dotenv";
+import { z } from "zod";
 
 const envFile =
   process.env.NODE_ENV === "production"
@@ -17,4 +18,26 @@ if (!process.env.NODE_ENV && fs.existsSync(preferredDevEnv)) {
   dotenv.config({ path: envPath });
 } else {
   dotenv.config();
+}
+
+const envSchema = z
+  .object({
+    MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
+    JWT_ACCESS_SECRET: z.string().min(1, "JWT_ACCESS_SECRET is required"),
+    JWT_REFRESH_SECRET: z.string().min(1, "JWT_REFRESH_SECRET is required"),
+    JWT_ACCESS_EXPIRES_IN: z
+      .string()
+      .min(1, "JWT_ACCESS_EXPIRES_IN is required"),
+    JWT_REFRESH_EXPIRES_IN: z
+      .string()
+      .min(1, "JWT_REFRESH_EXPIRES_IN is required"),
+  })
+  .loose();
+
+const parsedEnv = envSchema.safeParse(process.env);
+if (!parsedEnv.success) {
+  const details = parsedEnv.error.issues
+    .map((issue) => issue.message)
+    .join(", ");
+  throw new Error(`Invalid environment configuration: ${details}`);
 }

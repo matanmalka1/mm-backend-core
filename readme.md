@@ -21,7 +21,7 @@ A production-ready, secure REST API boilerplate built with Express.js and MongoD
 ### Authentication & Authorization
 
 - JWT-based authentication with access and refresh tokens
-- Refresh token rotation for enhanced security
+- Refresh token rotation (one-time use, server-side revocation)
 - Role-based access control (RBAC)
 - Permission-based authorization
 - OAuth 2.0 integration (Google, GitHub, Facebook)
@@ -290,7 +290,7 @@ http://localhost:3000/api/v1
 1. Register/Login → Receive access token + refresh token (httpOnly cookie)
 2. Use access token in Authorization header for protected routes
 3. When access token expires → Call /auth/refresh to get new access token
-4. Refresh token is automatically rotated on each refresh
+4. Refresh token is rotated on each refresh; the old token is revoked and reuse returns 401
 ```
 
 ### Authentication Endpoints
@@ -385,6 +385,7 @@ Cookie: refreshToken=<refresh_token>
   "message": "Token refreshed successfully"
 }
 ```
+**Note:** Refresh tokens are one-time use. On refresh, the old token is revoked and reuse returns 401.
 
 #### Get Current User Profile
 
@@ -732,7 +733,7 @@ template-project/
 - ✅ **JWT Token Security**
   - Access tokens (short-lived, 15 minutes)
   - Refresh tokens (longer-lived, 7 days)
-  - Refresh token rotation (one-time use)
+  - Refresh token rotation (one-time use with reuse detection)
   - Token blacklisting on logout
 
 - ✅ **Cookie Security**

@@ -25,7 +25,7 @@ describe("auth services", () => {
     expect(result.user.password).toBeUndefined();
   });
 
-  it("rejects duplicate registration", async () => {
+  it("handles duplicate registration without leaking existence", async () => {
     const { userRoleId } = globalThis.__roles;
     await User.create({
       email: "register-dup@example.com",
@@ -35,14 +35,15 @@ describe("auth services", () => {
       role: userRoleId,
     });
 
-    await expect(
-      register({
-        email: "register-dup@example.com",
-        password: "Password123!",
-        firstName: "Dup",
-        lastName: "User",
-      })
-    ).rejects.toThrow(/already exists/i);
+    const result = await register({
+      email: "register-dup@example.com",
+      password: "Password123!",
+      firstName: "Dup",
+      lastName: "User",
+    });
+
+    expect(result.created).toBe(false);
+    expect(result.user).toBeNull();
   });
 
   it("logs in and returns tokens", async () => {

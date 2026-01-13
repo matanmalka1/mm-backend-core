@@ -22,6 +22,7 @@ const getFrontendBase = () =>
 
 const oauthStateCookieOptions = buildCookieOptions({
   maxAge: OAUTH_STATE_TTL_MS,
+  httpOnly: true,
 });
 
 const setOAuthStateCookie = (res, state) => {

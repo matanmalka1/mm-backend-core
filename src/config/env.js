@@ -20,6 +20,13 @@ if (!process.env.NODE_ENV && fs.existsSync(preferredDevEnv)) {
   dotenv.config();
 }
 
+const refreshDurationSchema = z
+  .string()
+  .regex(
+    /^\d+(ms|s|m|h|d)$/i,
+    "JWT_REFRESH_EXPIRES_IN must be a duration like 15m or 7d"
+  );
+
 const envSchema = z
   .object({
     MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
@@ -28,9 +35,7 @@ const envSchema = z
     JWT_ACCESS_EXPIRES_IN: z
       .string()
       .min(1, "JWT_ACCESS_EXPIRES_IN is required"),
-    JWT_REFRESH_EXPIRES_IN: z
-      .string()
-      .min(1, "JWT_REFRESH_EXPIRES_IN is required"),
+    JWT_REFRESH_EXPIRES_IN: refreshDurationSchema,
   })
   .loose();
 

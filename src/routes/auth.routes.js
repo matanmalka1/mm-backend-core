@@ -10,7 +10,10 @@ import {
   updateProfile,
 } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
-import { authRateLimiter } from "../middlewares/rateLimiter.js";
+import {
+  authRateLimiter,
+  passwordChangeRateLimiter,
+} from "../middlewares/rateLimiter.js";
 import {
   validateLogin,
   validateRegister,
@@ -28,6 +31,7 @@ router.get("/me", authenticate, me);
 router.post(
   "/change-password",
   authenticate,
+  passwordChangeRateLimiter,
   validateChangePassword,
   changePassword
 );

@@ -32,3 +32,18 @@ export const authRateLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: true,
 });
+
+// Apply dedicated rate limits for password change attempts.
+export const passwordChangeRateLimiter = rateLimit({
+  windowMs: +process.env.PASSWORD_CHANGE_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000,
+  max: +process.env.PASSWORD_CHANGE_RATE_LIMIT_MAX_REQUESTS || 5,
+  message: {
+    success: false,
+    error: {
+      code: API_ERROR_CODES.RATE_LIMIT_EXCEEDED,
+      message: "Too many password change attempts, please try again later",
+    },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

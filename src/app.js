@@ -32,11 +32,16 @@ const corsOrigins = (process.env.CORS_ORIGIN || "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+const hasCorsOrigins = corsOrigins.length > 0;
+
+if (!hasCorsOrigins) {
+  logger.warn("CORS origins not configured; disabling credentials-based CORS");
+}
 
 app.use(
   cors({
-    origin: corsOrigins.length ? corsOrigins : undefined,
-    credentials: true,
+    origin: hasCorsOrigins ? corsOrigins : false,
+    credentials: hasCorsOrigins,
   })
 );
 

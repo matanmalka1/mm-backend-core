@@ -6,11 +6,7 @@ import {
   getRefreshTokenExpiration,
   sanitizeUser,
 } from "../../utils/auth-helpers.js";
-import {
-  duplicateResourceError,
-  invalidCredentialsError,
-  serverError,
-} from "../../utils/error-factories.js";
+import { invalidCredentialsError, serverError } from "../../utils/error-factories.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
 import { logger } from "../../utils/logger.js";
 import { comparePassword, hashPassword } from "../../utils/password.js";
@@ -21,7 +17,7 @@ export const register = async (userData) => {
     logger.warn("Registration failed - duplicate email", {
       email: userData.email,
     });
-    throw duplicateResourceError("User", "email");
+    return { created: false };
   }
 
   const defaultRole = await Role.findOne({ name: "user" });
@@ -44,7 +40,7 @@ export const register = async (userData) => {
     email: user.email,
   });
 
-  return { user: userObject };
+  return { user: userObject, created: true };
 };
 
 export const login = async (email, password) => {
@@ -57,13 +53,13 @@ export const login = async (email, password) => {
 
   if (!user || !user.isActive) {
     logger.warn("Login failed - invalid credentials", { email });
-    throw invalidCredentialsError();
+    throw invalidCredentialsError("Invalid email or password");
   }
 
   const isPasswordValid = await comparePassword(password, user.password);
   if (!isPasswordValid) {
-    logger.warn("Login failed - invalid password", { email });
-    throw invalidCredentialsError();
+    logger.warn("Login failed - invalid credentials", { email });
+    throw invalidCredentialsError("Invalid email or password");
   }
 
   const accessToken = generateAccessToken({ userId: user._id.toString() });

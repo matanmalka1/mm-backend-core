@@ -15,9 +15,9 @@ describe("Auth flow", () => {
       lastName: "User",
     });
 
-    expect(res.statusCode).toBe(201);
+    expect(res.statusCode).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.data.user.email).toBe("newuser@example.com");
+    expect(res.body.message).toBe("Check your email");
   });
 
   it("logs in and returns the current user", async () => {

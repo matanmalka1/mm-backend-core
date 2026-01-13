@@ -23,9 +23,9 @@ const cookieOptions = {
 
 // Handle registration request.
 export const register = async (req, res) => {
-  const { user } = await registerUser(req.body);
+  await registerUser(req.body);
 
-  successResponse(res, { user }, "User registered successfully", 201);
+  successResponse(res, null, "Check your email");
 };
 
 // Handle login request and set refresh token cookie.

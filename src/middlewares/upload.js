@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from "fs";
-import { dirname, join } from "path";
+import { dirname, extname, join } from "path";
 import { fileURLToPath } from "url";
 
 import multer from "multer";
@@ -17,6 +17,20 @@ if (!existsSync(uploadDir)) {
   mkdirSync(uploadDir, { recursive: true });
 }
 
+const safeBaseName = (value) =>
+  String(value || "file")
+    .replace(/[^a-zA-Z0-9_-]/g, "")
+    .slice(0, 50) || "file";
+
+const safeExtension = (value) => {
+  const rawExt = extname(String(value || "")).toLowerCase();
+  const cleaned = rawExt.replace(/[^a-z0-9.]/g, "");
+  if (!cleaned || cleaned === ".") {
+    return ".bin";
+  }
+  return cleaned;
+};
+
 // Configure disk storage for uploaded files.
 const storage = multer.diskStorage({
   // Resolve upload destination folder.
@@ -25,9 +39,10 @@ const storage = multer.diskStorage({
   },
   // Generate a unique filename for the uploaded file.
   filename: (_req, file, cb) => {
+    const baseName = safeBaseName(file.fieldname);
+    const ext = safeExtension(file.originalname);
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = file.originalname.split(".").pop();
-    cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`);
+    cb(null, `${baseName}-${uniqueSuffix}${ext}`);
   },
 });
 

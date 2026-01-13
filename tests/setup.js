@@ -5,6 +5,7 @@ import { beforeAll, afterAll, beforeEach } from "vitest";
 import { RefreshToken } from "../src/models/RefreshToken.js";
 import { Role } from "../src/models/Role.js";
 import { User } from "../src/models/User.js";
+import { ensurePermissions } from "../src/utils/permission-utils.js";
 
 let mongoServer;
 
@@ -39,6 +40,16 @@ beforeAll(async () => {
   const userRole =
     (await Role.findOne({ name: "user" })) ||
     (await Role.create({ name: "user", description: "user role" }));
+
+  const requiredPermissions = [
+    { name: "users.update", resource: "users", action: "update" },
+    { name: "users.delete", resource: "users", action: "delete" },
+  ];
+  const permissionMap = await ensurePermissions(requiredPermissions);
+  const permissionIds = Object.values(permissionMap).map((perm) => perm._id);
+
+  adminRole.permissions = permissionIds;
+  await adminRole.save();
 
   globalThis.__roles = {
     adminRoleId: adminRole._id.toString(),

@@ -7,7 +7,11 @@ import {
   getUserById,
   updateUser,
 } from "../controllers/user.controller.js";
-import { authenticate, authorize } from "../middlewares/auth.middleware.js";
+import {
+  authenticate,
+  authorize,
+  checkPermission,
+} from "../middlewares/auth.middleware.js";
 import {
   validateCreateUser,
   validateUpdateUser,
@@ -31,6 +35,7 @@ router.get("/:id", authenticate, validateUserIdParam, getUserById);
 router.put(
   "/:id",
   authenticate,
+  checkPermission("users", "update"),
   validateUserIdParam,
   validateUpdateUser,
   updateUser
@@ -40,6 +45,7 @@ router.delete(
   "/:id",
   authenticate,
   authorize("admin"),
+  checkPermission("users", "delete"),
   validateUserIdParam,
   deleteUser
 );

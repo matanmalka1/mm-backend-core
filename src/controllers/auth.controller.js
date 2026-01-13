@@ -8,18 +8,11 @@ import {
   logout as logoutUser,
   refreshAccessToken,
 } from "../services/auth/token.service.js";
+import { buildCookieOptions } from "../utils/cookie-options.js";
 import { refreshTokenInvalidError } from "../utils/error-factories.js";
 import { successResponse } from "../utils/response.js";
 
-const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.COOKIE_SECURE
-    ? process.env.COOKIE_SECURE === "true"
-    : process.env.NODE_ENV === "production",
-  sameSite: process.env.COOKIE_SAME_SITE || "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: "/",
-};
+const cookieOptions = buildCookieOptions();
 
 // Handle registration request.
 export const register = async (req, res) => {

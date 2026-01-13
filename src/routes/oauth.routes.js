@@ -4,6 +4,7 @@ import express from "express";
 import passport from "passport";
 
 import { handleOAuthLogin } from "../services/auth/core.service.js";
+import { buildCookieOptions } from "../utils/cookie-options.js";
 import { logger } from "../utils/logger.js";
 
 export const router = express.Router();
@@ -14,15 +15,9 @@ const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 const getFrontendBase = () =>
   process.env.FRONTEND_URL || "http://localhost:5173";
 
-const oauthStateCookieOptions = {
-  httpOnly: true,
-  secure: process.env.COOKIE_SECURE
-    ? process.env.COOKIE_SECURE === "true"
-    : process.env.NODE_ENV === "production",
-  sameSite: process.env.COOKIE_SAME_SITE || "lax",
+const oauthStateCookieOptions = buildCookieOptions({
   maxAge: OAUTH_STATE_TTL_MS,
-  path: "/",
-};
+});
 
 const setOAuthStateCookie = (res, state) => {
   res.cookie(OAUTH_STATE_COOKIE, state, oauthStateCookieOptions);
@@ -66,16 +61,7 @@ const handleOAuthCallback = async (req, res) => {
 
     const { accessToken, refreshToken } = await handleOAuthLogin(user);
 
-    const isProduction = process.env.NODE_ENV === "production";
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.COOKIE_SECURE
-        ? process.env.COOKIE_SECURE === "true"
-        : isProduction,
-      sameSite: process.env.COOKIE_SAME_SITE || "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-    });
+    res.cookie("refreshToken", refreshToken, buildCookieOptions());
 
     const redirectUrl = `${getFrontendBase()}/auth/callback#accessToken=${encodeURIComponent(
       accessToken

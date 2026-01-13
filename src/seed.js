@@ -2,9 +2,9 @@ import "./config/env.js";
 import bcrypt from "bcrypt";
 
 import { connectDB, disconnectDB } from "./config/db.js";
-import { Permission } from "./models/Permission.js";
 import { Role } from "./models/Role.js";
 import { User } from "./models/User.js";
+import { ensurePermissions } from "./utils/permission-utils.js";
 
 // Seed database with roles, permissions, and default users.
 const seed = async () => {
@@ -43,20 +43,7 @@ const seed = async () => {
     { name: "auth.logout", resource: "auth", action: "logout" },
   ];
 
-  const permissionMap = {};
-
-  for (const perm of permissions) {
-    let permission = await Permission.findOne({ name: perm.name });
-    if (!permission) {
-      permission = await Permission.create({
-        name: perm.name,
-        description: `${perm.name} permission`,
-        resource: perm.resource,
-        action: perm.action,
-      });
-    }
-    permissionMap[perm.name] = permission;
-  }
+  const permissionMap = await ensurePermissions(permissions);
 
   console.log("Permissions created/updated");
 

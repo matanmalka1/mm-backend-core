@@ -2,14 +2,14 @@ import {
   register as registerUser,
   login as loginUser,
 } from "../services/auth/core.service.js";
+import { changePassword as changeUserPassword } from "../services/auth/password.service.js";
+import { updateProfile as updateUserProfile } from "../services/auth/profile.service.js";
 import {
   logout as logoutUser,
   refreshAccessToken,
 } from "../services/auth/token.service.js";
-import { changePassword as changeUserPassword } from "../services/auth/password.service.js";
-import { updateProfile as updateUserProfile } from "../services/auth/profile.service.js";
-import { successResponse } from "../utils/response.js";
 import { refreshTokenInvalidError } from "../utils/error-factories.js";
+import { successResponse } from "../utils/response.js";
 
 const cookieOptions = {
   httpOnly: true,

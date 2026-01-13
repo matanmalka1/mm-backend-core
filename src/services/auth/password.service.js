@@ -1,11 +1,11 @@
-import { comparePassword, hashPassword } from "../../utils/password.js";
-import { logger } from "../../utils/logger.js";
 import { User } from "../../models/index.js";
 import {
   authenticationError,
   invalidCredentialsError,
   resourceNotFoundError,
 } from "../../utils/error-factories.js";
+import { logger } from "../../utils/logger.js";
+import { comparePassword, hashPassword } from "../../utils/password.js";
 
 export const changePassword = async (userId, currentPassword, newPassword) => {
   const user = await User.findById(userId).select("+password");

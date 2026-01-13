@@ -1,10 +1,11 @@
 import passport from "passport";
-import { Strategy as GoogleOAuth2Strategy } from "passport-google-oauth20";
-import { Strategy as GitHubOAuth2Strategy } from "passport-github2";
 import { Strategy as FacebookStrategy } from "passport-facebook";
+import { Strategy as GitHubOAuth2Strategy } from "passport-github2";
+import { Strategy as GoogleOAuth2Strategy } from "passport-google-oauth20";
+
 import { User, Role } from "../models/index.js";
-import { hashPassword } from "../utils/password.js";
 import { logger } from "../utils/logger.js";
+import { hashPassword } from "../utils/password.js";
 
 const findOrCreateUser = async (profile, provider) => {
   try {

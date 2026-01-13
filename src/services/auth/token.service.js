@@ -1,5 +1,9 @@
 import { RefreshToken, User } from "../../models/index.js";
 import {
+  hashRefreshToken,
+  getRefreshTokenExpiration,
+} from "../../utils/auth-helpers.js";
+import {
   authenticationError,
   refreshTokenInvalidError,
 } from "../../utils/error-factories.js";
@@ -8,10 +12,6 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../../utils/jwt.js";
-import {
-  hashRefreshToken,
-  getRefreshTokenExpiration,
-} from "../../utils/auth-helpers.js";
 import { logger } from "../../utils/logger.js";
 
 export const logout = async (userId, refreshToken) => {

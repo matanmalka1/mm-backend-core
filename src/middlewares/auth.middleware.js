@@ -1,9 +1,9 @@
-import { verifyAccessToken } from "../utils/jwt.js";
+import { User } from "../models/index.js";
 import {
   authenticationError,
   authorizationError,
 } from "../utils/error-factories.js";
-import { User } from "../models/index.js";
+import { verifyAccessToken } from "../utils/jwt.js";
 
 // Authenticate request by validating JWT and loading user with role/permissions.
 export const authenticate = async (req, _res, next) => {

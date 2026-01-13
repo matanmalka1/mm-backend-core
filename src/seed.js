@@ -1,7 +1,9 @@
-import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
+
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
 import { connectDB, disconnectDB } from "./config/db.js";
 import { User, Role, Permission } from "./models/index.js";
 

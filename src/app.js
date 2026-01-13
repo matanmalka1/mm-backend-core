@@ -1,20 +1,21 @@
 import express from "express";
 import "express-async-errors";
+import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import mongoSanitize from "express-mongo-sanitize";
 import passport from "passport";
-import { globalRateLimiter } from "./middlewares/rateLimiter.js";
-import { requestLogger } from "./middlewares/requestLogger.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
-import { notFound } from "./middlewares/notFound.js";
-import { router } from "./routes/index.js";
+
 import {
   configureGoogleStrategy,
   configureGitHubStrategy,
   configureFacebookStrategy,
 } from "./config/oauth.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
+import { notFound } from "./middlewares/notFound.js";
+import { globalRateLimiter } from "./middlewares/rateLimiter.js";
+import { requestLogger } from "./middlewares/requestLogger.js";
+import { router } from "./routes/index.js";
 
 export const app = express();
 

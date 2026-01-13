@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+
 import { successResponse } from "../utils/response.js";
 
 export const router = express.Router();

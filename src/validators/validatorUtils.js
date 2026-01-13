@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { z } from "zod";
+
 import { validationErrorWithDetails } from "../utils/error-factories.js";
 
 const PASSWORD_REQUIREMENTS_MESSAGE =

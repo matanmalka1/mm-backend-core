@@ -1,17 +1,17 @@
-import { comparePassword, hashPassword } from "../../utils/password.js";
-import { logger } from "../../utils/logger.js";
 import { User, Role, RefreshToken } from "../../models/index.js";
+import {
+  hashRefreshToken,
+  getRefreshTokenExpiration,
+  sanitizeUser,
+} from "../../utils/auth-helpers.js";
 import {
   duplicateResourceError,
   invalidCredentialsError,
   serverError,
 } from "../../utils/error-factories.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
-import {
-  hashRefreshToken,
-  getRefreshTokenExpiration,
-  sanitizeUser,
-} from "../../utils/auth-helpers.js";
+import { logger } from "../../utils/logger.js";
+import { comparePassword, hashPassword } from "../../utils/password.js";
 
 export const register = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });

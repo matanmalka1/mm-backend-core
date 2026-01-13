@@ -1,7 +1,7 @@
-import { logger } from "../../utils/logger.js";
 import { User } from "../../models/index.js";
-import { resourceNotFoundError } from "../../utils/error-factories.js";
 import { sanitizeUser } from "../../utils/auth-helpers.js";
+import { resourceNotFoundError } from "../../utils/error-factories.js";
+import { logger } from "../../utils/logger.js";
 
 export const updateProfile = async (userId, profileData) => {
   const user = await User.findById(userId).populate({

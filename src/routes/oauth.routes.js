@@ -1,7 +1,8 @@
 import express from "express";
 import passport from "passport";
-import { logger } from "../utils/logger.js";
+
 import { handleOAuthLogin } from "../services/auth/core.service.js";
+import { logger } from "../utils/logger.js";
 
 export const router = express.Router();
 

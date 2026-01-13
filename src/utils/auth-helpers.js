@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
-import { verifyAccessToken } from "./jwt.js";
+
 import { User } from "../models/index.js";
+
+import { verifyAccessToken } from "./jwt.js";
 
 export const hashRefreshToken = (token) =>
   crypto.createHash("sha256").update(token).digest("hex");

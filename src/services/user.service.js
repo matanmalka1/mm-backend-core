@@ -1,5 +1,4 @@
 import { User, Role } from "../models/index.js";
-import { hashPassword } from "../utils/password.js";
 import {
   resourceNotFoundError,
   duplicateResourceError,
@@ -8,6 +7,7 @@ import {
   parsePaginationParams,
   buildPaginationMeta,
 } from "../utils/pagination.js";
+import { hashPassword } from "../utils/password.js";
 
 export const createUser = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });

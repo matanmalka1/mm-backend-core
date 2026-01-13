@@ -29,7 +29,19 @@ const ensureEnv = () => {
 
 beforeAll(async () => {
   ensureEnv();
-  mongoServer = await MongoMemoryServer.create();
+  const basePort = +process.env.MONGO_TEST_PORT || 37017;
+  const poolOffset = Number(
+    process.env.VITEST_POOL_ID ?? process.env.VITEST_WORKER_ID ?? 0
+  );
+  const port = basePort + poolOffset;
+
+  mongoServer = await MongoMemoryServer.create({
+    instance: {
+      ip: "127.0.0.1",
+      port,
+      portGeneration: false,
+    },
+  });
   process.env.MONGODB_URI = mongoServer.getUri();
 
   await mongoose.connect(process.env.MONGODB_URI);

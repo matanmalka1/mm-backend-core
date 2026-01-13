@@ -1,7 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import passport from "passport";
 
@@ -20,6 +19,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFound } from "./middlewares/notFound.js";
 import { globalRateLimiter } from "./middlewares/rateLimiter.js";
 import { requestLogger } from "./middlewares/requestLogger.js";
+import { requestSanitizer } from "./middlewares/requestSanitizer.js";
 import { requestTimeout } from "./middlewares/requestTimeout.js";
 import { router } from "./routes/index.js";
 
@@ -43,7 +43,7 @@ const bodyLimit = process.env.BODY_LIMIT || "1mb";
 app.use(express.json({ limit: bodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: bodyLimit }));
 app.use(cookieParser());
-app.use(mongoSanitize());
+app.use(requestSanitizer);
 
 configureGoogleStrategy();
 configureGitHubStrategy();

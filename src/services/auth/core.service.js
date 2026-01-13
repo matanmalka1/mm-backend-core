@@ -1,15 +1,15 @@
 import { RefreshToken } from "../../models/RefreshToken.js";
-import { Role } from "../../models/Role.js";
 import { User } from "../../models/User.js";
 import {
   hashRefreshToken,
   getRefreshTokenExpiration,
   sanitizeUser,
 } from "../../utils/auth-helpers.js";
-import { invalidCredentialsError, serverError } from "../../utils/error-factories.js";
+import { invalidCredentialsError } from "../../utils/error-factories.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
 import { logger } from "../../utils/logger.js";
 import { comparePassword, hashPassword } from "../../utils/password.js";
+import { ensureDefaultUserRole } from "../../utils/role-utils.js";
 
 export const register = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });
@@ -20,10 +20,7 @@ export const register = async (userData) => {
     return { created: false };
   }
 
-  const defaultRole = await Role.findOne({ name: "user" });
-  if (!defaultRole) {
-    throw serverError("Default role not found");
-  }
+  const defaultRole = await ensureDefaultUserRole();
 
   const user = await User.create({
     email: userData.email,

@@ -56,3 +56,29 @@ export const validateUpdateUser = (req, _res, next) => {
 
   return runSchema(updateUserSchema, req.body ?? {}, next);
 };
+
+export const validateUserListQuery = (req, _res, next) => {
+  const positiveIntMessage = "Value must be a positive integer";
+  const maxLimit = 100;
+
+  const numberParam = (label, maxValue) =>
+    z
+      .union([z.string(), z.number()])
+      .transform((value) => Number(value))
+      .refine((value) => Number.isInteger(value) && value > 0, {
+        message: `${label} ${positiveIntMessage}`,
+      })
+      .refine((value) => value <= maxValue, {
+        message: `${label} must be less than or equal to ${maxValue}`,
+      })
+      .optional();
+
+  const listQuerySchema = z
+    .object({
+      page: numberParam("page", 1000000),
+      limit: numberParam("limit", maxLimit),
+    })
+    .passthrough();
+
+  return runSchema(listQuerySchema, req.query ?? {}, next);
+};

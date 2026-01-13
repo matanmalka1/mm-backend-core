@@ -16,6 +16,7 @@ import {
   validateCreateUser,
   validateUpdateUser,
   validateUserIdParam,
+  validateUserListQuery,
 } from "../validators/userValidate.js";
 
 export const router = express.Router();
@@ -28,7 +29,7 @@ router.post(
   createUser
 );
 // READ ALL
-router.get("/", authenticate, getAllUsers);
+router.get("/", authenticate, validateUserListQuery, getAllUsers);
 // READ ONE
 router.get("/:id", authenticate, validateUserIdParam, getUserById);
 // UPDATE

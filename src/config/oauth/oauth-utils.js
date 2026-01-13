@@ -1,9 +1,9 @@
 import passport from "passport";
 
-import { Role } from "../../models/Role.js";
 import { User } from "../../models/User.js";
 import { logger } from "../../utils/logger.js";
 import { hashPassword } from "../../utils/password.js";
+import { ensureDefaultUserRole } from "../../utils/role-utils.js";
 
 const normalizeUrl = (value) => value.replace(/\/+$/, "");
 
@@ -78,10 +78,7 @@ export const findOrCreateUser = async (profile, provider) => {
       return user;
     }
 
-    const role = await Role.findOne({ name: "user" });
-    if (!role) {
-      throw new Error("Default USER role not found. Run database seed.");
-    }
+    const role = await ensureDefaultUserRole();
 
     const firstName =
       profile.name?.givenName || profile.displayName?.split(" ")?.[0] || "User";

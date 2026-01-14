@@ -22,9 +22,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --check",
-    "format:fix": "prettier . --write",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "format:fix": "prettier . --write"
   },
   "keywords": [
     "express",

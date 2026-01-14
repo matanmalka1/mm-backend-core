@@ -1,6 +1,6 @@
 {
   "name": "mm-backend-core",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "CLI to generate the mm-backend-core backend template",
   "type": "module",
   "bin": {
@@ -11,6 +11,7 @@
   },
   "files": [
     "bin/",
+    "src/",
     "addons/",
     "templates/",
     "CHANGELOG.md",
@@ -60,9 +61,14 @@
     "template",
     "scaffold",
     "generator",
+    "cli",
     "express",
     "mongodb",
-    "mongoose"
+    "mongoose",
+    "backend",
+    "boilerplate",
+    "nodejs",
+    "rest-api"
   ],
   "author": "Matan Malka",
   "license": "MIT",

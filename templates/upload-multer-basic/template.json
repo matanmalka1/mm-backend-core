@@ -1,6 +1,0 @@
-{
-  "name": "upload-multer-basic",
-  "description": "Basic file upload using multer.",
-  "tags": ["upload", "multer"],
-  "requires": ["PORT"]
-}

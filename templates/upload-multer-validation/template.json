@@ -1,6 +1,0 @@
-{
-  "name": "upload-multer-validation",
-  "description": "Multer upload with file size and type validation.",
-  "tags": ["upload", "multer", "validation"],
-  "requires": ["MAX_FILE_SIZE", "ALLOWED_MIME"]
-}

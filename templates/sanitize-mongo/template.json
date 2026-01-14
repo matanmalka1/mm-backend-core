@@ -1,6 +1,0 @@
-{
-  "name": "sanitize-mongo",
-  "description": "MongoDB query sanitization middleware.",
-  "tags": ["security", "sanitize"],
-  "requires": ["PORT"]
-}

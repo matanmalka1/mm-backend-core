@@ -29,6 +29,10 @@ tests/
 __tests__/
 coverage/
 
+# Template runtime artifacts
+templates/**/node_modules/
+templates/**/logs/
+
 # Documentation source (keep compiled docs)
 docs/
 

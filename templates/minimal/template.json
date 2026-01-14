@@ -1,0 +1,6 @@
+{
+  "name": "minimal",
+  "description": "Minimal full-stack backend template without tests or dev extras.",
+  "tags": ["minimal", "baseline"],
+  "requires": ["PORT", "MONGO_URI", "JWT_ACCESS_SECRET", "JWT_REFRESH_SECRET"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "validation-zod",
+  "description": "Request validation using Zod schemas.",
+  "tags": ["validation", "zod"],
+  "requires": ["PORT"]
+}

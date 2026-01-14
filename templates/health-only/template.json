@@ -1,0 +1,6 @@
+{
+  "name": "health-only",
+  "description": "Minimal Express API with only health endpoint.",
+  "tags": ["health", "minimal"],
+  "requires": ["PORT"]
+}

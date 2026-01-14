@@ -1,0 +1,6 @@
+{
+  "name": "swagger-openapi",
+  "description": "Minimal OpenAPI documentation with Swagger UI.",
+  "tags": ["docs", "openapi", "swagger"],
+  "requires": ["PORT"]
+}

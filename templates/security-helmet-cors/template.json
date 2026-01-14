@@ -1,0 +1,6 @@
+{
+  "name": "security-helmet-cors",
+  "description": "Baseline security with Helmet and CORS.",
+  "tags": ["security", "helmet", "cors"],
+  "requires": ["CORS_ORIGIN"]
+}

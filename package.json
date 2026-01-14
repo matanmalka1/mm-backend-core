@@ -6,9 +6,13 @@
   "bin": {
     "mm-backend-core": "bin/cli.js"
   },
+  "scripts": {
+    "test": "node tests/smoke-init.mjs"
+  },
   "files": [
     "bin/",
-    "template/",
+    "templates/",
+    "CHANGELOG.md",
     "README.md",
     "LICENSE"
   ],

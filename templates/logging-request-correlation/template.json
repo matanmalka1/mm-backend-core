@@ -1,0 +1,6 @@
+{
+  "name": "logging-request-correlation",
+  "description": "Request correlation ID and simple request logging.",
+  "tags": ["logging", "observability"],
+  "requires": ["PORT"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "rate-limit-redis",
+  "description": "Redis-backed rate limiting for Express.",
+  "tags": ["rate-limit", "redis", "security"],
+  "requires": ["REDIS_URL", "RATE_LIMIT_WINDOW_MS", "RATE_LIMIT_MAX"]
+}

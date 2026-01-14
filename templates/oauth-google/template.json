@@ -1,0 +1,11 @@
+{
+  "name": "oauth-google",
+  "description": "Google OAuth login using Passport.",
+  "tags": ["oauth", "google", "auth"],
+  "requires": [
+    "SESSION_SECRET",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_CALLBACK_URL"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "full",
+  "description": "Full Express + MongoDB template with auth, RBAC, OAuth, uploads, and tests.",
+  "tags": ["full", "auth", "oauth", "rbac", "uploads"],
+  "requires": ["PORT", "MONGO_URI", "JWT_ACCESS_SECRET", "JWT_REFRESH_SECRET"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "rate-limit-memory",
+  "description": "In-memory rate limiting for Express.",
+  "tags": ["rate-limit", "security"],
+  "requires": ["RATE_LIMIT_WINDOW_MS", "RATE_LIMIT_MAX"]
+}

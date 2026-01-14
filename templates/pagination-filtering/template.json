@@ -1,0 +1,6 @@
+{
+  "name": "pagination-filtering",
+  "description": "Simple pagination and filtering example endpoint.",
+  "tags": ["pagination", "filtering"],
+  "requires": ["PORT"]
+}

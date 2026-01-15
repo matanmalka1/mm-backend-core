@@ -1,6 +1,6 @@
 {
   "name": "mm-backend-core",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "description": "CLI to generate the mm-backend-core backend template",
   "type": "module",
   "bin": {

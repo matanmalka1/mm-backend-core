@@ -41,6 +41,16 @@ mm-backend-core template <name>
 
 Defaults: `full` is used unless you pass `--minimal` or `--template <name>`.
 
+Install a specific template:
+
+```sh
+# Full template (default)
+mm-backend-core init my-app --template full
+
+# Minimal template
+mm-backend-core init my-app --minimal
+```
+
 ## OAuth add-on
 
 Install optional OAuth dependencies:

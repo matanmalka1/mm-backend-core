@@ -68,7 +68,9 @@
     "backend",
     "boilerplate",
     "nodejs",
-    "rest-api"
+    "rest-api",
+    "backend generator",
+    "nodejs template"
   ],
   "author": "Matan Malka",
   "license": "MIT",
